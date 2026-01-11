@@ -7,6 +7,9 @@ import foodBanner from "../assets/food_banner.jpg";
 
 import { UserContext } from "../App";
 
+
+import SearchBar from "../modules/SearchBar"; // example path
+
 const Skeleton = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
@@ -31,6 +34,7 @@ const Skeleton = () => {
       </>
       <h1 className="Skeleton-title">Work In Progress Cooking</h1>
       <img className="Food-banner" src={foodBanner} alt="food banner" />
+      <SearchBar />
     </div>
   );
 };

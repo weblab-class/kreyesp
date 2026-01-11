@@ -1,0 +1,23 @@
+.SearchBar-component{margin:20px}
+
+
+.SearchBar-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.SearchBar-textarea {
+  width: 100%;
+  max-width: 700px;
+  resize: vertical;
+}
+
+.SearchBar-button {
+  height: 30px;
+  padding: 0 14px;
+}
+
+.SearchBar-label{
+    font-size: 30px;
+}
