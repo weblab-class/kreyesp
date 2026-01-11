@@ -1,1 +1,8 @@
 /* Fill me in :) */
+.Food-banner {
+  width: 100%;
+  max-width: 900px; /* cap how big it can get */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}

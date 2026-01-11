@@ -9,6 +9,8 @@ import { socket } from "../client-socket";
 
 import { get, post } from "../utilities";
 
+import "@mantine/core/styles.css";
+
 export const UserContext = createContext(null);
 
 /**
