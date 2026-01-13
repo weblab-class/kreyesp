@@ -3,7 +3,7 @@ import { GoogleLogin, googleLogout } from "@react-oauth/google";
 
 import "../../utilities.css";
 import "./Skeleton.css";
-import foodBanner from "../assets/food_banner.jpg";
+import foodBanner from "../assets/Chinese-Cooking-Hacks.png";
 import tacos from "../assets/tacos.jpg";
 import custom_recipe_banner from "../assets/Custom_Recipe_Banner.png";
 

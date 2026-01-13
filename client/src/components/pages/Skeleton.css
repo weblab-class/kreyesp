@@ -1,8 +1,10 @@
 /* Fill me in :) */
 .Food-banner {
-  width: 100%;
-  max-width: 900px; /* cap how big it can get */
-  height: auto;
+  height: 260px;      
+  width: 740px;       
+  object-fit: cover;  
+  border-radius: 12px;
+
   display: block;
   margin: 0 auto;
 }
