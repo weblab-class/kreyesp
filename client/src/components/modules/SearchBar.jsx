@@ -20,8 +20,8 @@ const SearchBar = () => {
           className="SearchBar-textarea"
           value={inp}
           onChange={changeBox}
-          rows={1} // Optional: define default height
-          cols={100} // Optional: define default width
+          rows={1} 
+          cols={100} 
         />
 
       <button className="SearchBar-button">Enter</button>

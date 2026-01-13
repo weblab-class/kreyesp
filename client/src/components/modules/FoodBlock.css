@@ -1,0 +1,30 @@
+.FoodBlock-image{
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 1px;
+    aspect-ratio: 1/1;
+}
+
+.FoodGrid {
+  text-align: center;
+}
+
+.FoodBlock-component{margin: 10px;
+    background: #e0e0e0;  
+    border: 1px solid var(--border-grey); 
+    padding: 12px;
+    border-radius: 8px;
+    display: inline-block;
+    width: clamp(220px, 33vw, 420px);
+    vertical-align: top;
+    margin: 10px;
+}
+
+.FoodBlock-name{margin-top:1px;
+margin-bottom:1px;}
+
+.FoodBlock-description{margin-top:1px;
+font-size: 15px;
+color: var(--text-grey)}
