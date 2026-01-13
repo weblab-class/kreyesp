@@ -5,12 +5,14 @@ import "../../utilities.css";
 import "./Skeleton.css";
 import foodBanner from "../assets/food_banner.jpg";
 import tacos from "../assets/tacos.jpg";
+import custom_recipe_banner from "../assets/Custom_Recipe_Banner.png";
 
 import { UserContext } from "../App";
 
-import SearchBar from "../modules/SearchBar";
+import TextBox from "../modules/TextBox";
 import PageTitle from "../modules/PageTitle";
 import FoodBlock from "../modules/FoodBlock";
+import CustomRecipe from "../modules/CustomRecipe";
 
 const Skeleton = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
@@ -39,7 +41,9 @@ const Skeleton = () => {
         description="A New Way Of Cooking"
       />
       <img className="Food-banner" src={foodBanner} alt="food banner" />
-      <SearchBar />
+      <TextBox label="Search" rows={1} cols={100} />
+
+      {/* Food Recommendation Component */}
       <div className="FoodGrid">
         <h1>Try These!</h1>
         <FoodBlock
@@ -52,11 +56,13 @@ const Skeleton = () => {
           name="Tacos Al Pastor"
           description="Good Food"
         />
-        <FoodBlock
-          image_src={tacos}
-          name="Tacos Al Pastor"
-          description=""
-        />
+        <FoodBlock image_src={tacos} name="Tacos Al Pastor" description="" />
+
+        {/* Custom Recipe Component */}
+        <div className="CustomRecipeRow">
+          <CustomRecipe />
+          <img className="CustomRecipeBanner" src={custom_recipe_banner} al="Custom Recipe Banner" />
+        </div>
       </div>
     </div>
   );
