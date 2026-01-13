@@ -13,6 +13,8 @@ import TextBox from "../modules/TextBox";
 import PageTitle from "../modules/PageTitle";
 import FoodBlock from "../modules/FoodBlock";
 import CustomRecipe from "../modules/CustomRecipe";
+import NavBar from "../modules/NavBar";
+
 
 const Skeleton = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
@@ -38,10 +40,14 @@ const Skeleton = () => {
       </>
       <PageTitle
         title="Work In Progress Cooking"
-        description="A New Way Of Cooking"
+        description=""
       />
+
       <img className="Food-banner" src={foodBanner} alt="food banner" />
-      <TextBox label="Search" rows={1} cols={100} />
+
+      <div className="Search-row">
+        <TextBox className="Search-bar" label="Search" rows={1} cols={100} />
+      </div>
 
       {/* Food Recommendation Component */}
       <div className="FoodGrid">
@@ -61,7 +67,11 @@ const Skeleton = () => {
         {/* Custom Recipe Component */}
         <div className="CustomRecipeRow">
           <CustomRecipe />
-          <img className="CustomRecipeBanner" src={custom_recipe_banner} al="Custom Recipe Banner" />
+          <img
+            className="CustomRecipeBanner"
+            src={custom_recipe_banner}
+            al="Custom Recipe Banner"
+          />
         </div>
       </div>
     </div>

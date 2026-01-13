@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 import { Outlet } from "react-router-dom";
+import NavBar from "./modules/NavBar";
 
 import jwt_decode from "jwt-decode";
 
@@ -51,6 +52,7 @@ const App = () => {
 
   return (
     <UserContext.Provider value={authContextValue}>
+      <NavBar userId={userId} handleLogin={handleLogin} handleLogout={handleLogout}/>
       <Outlet />
     </UserContext.Provider>
   );
