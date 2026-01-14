@@ -5,6 +5,7 @@ import Skeleton from "./components/pages/Skeleton";
 import NotFound from "./components/pages/NotFound";
 import Search from "./components/pages/Search";
 import Feed from "./components/pages/Feed";
+import Profile from "./components/pages/Profile";
 
 import {
   createBrowserRouter,
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Skeleton />}/>
       <Route path="/search" element={<Search />}/>
        <Route path="/feed" element={<Feed />}/>
+       <Route path="/profile" element={<Profile/>}/>
 
     </Route>
   )

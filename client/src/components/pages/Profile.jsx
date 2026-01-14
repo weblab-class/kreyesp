@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 
 import "../../utilities.css";
-import "./Search.css";
+import "./Profile.css";
 import foodBanner from "../assets/Chinese-Cooking-Hacks.png";
 import tacos from "../assets/tacos.jpg";
 import custom_recipe_banner from "../assets/Custom_Recipe_Banner.png";
@@ -16,11 +16,11 @@ import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
 
 
-const Search = () => {
+const Profile = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
   return (
-    <div className="Search-container">
+    <div className="Profile-container">
       <>
         {userId ? (
           <button
@@ -39,12 +39,12 @@ const Search = () => {
         )}
       </>
       <PageTitle
-        title="Search"
+        title="Profile"
         description=""
       />
 
-      <div className="Search-row">
-        <TextBox className="Search-bar" label="Search" rows={1} cols={100} />
+      <div className="Profile-row">
+        <TextBox className="Profile-bar" label="Profile" rows={1} cols={100} />
       </div>
 
 
@@ -52,4 +52,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default Profile;

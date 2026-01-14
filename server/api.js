@@ -11,6 +11,7 @@ const express = require("express");
 
 // import models so we can interact with the database
 const User = require("./models/user");
+const FoodPost = require("./models/food-post");
 
 // import authentication library
 const auth = require("./auth");
@@ -20,6 +21,8 @@ const router = express.Router();
 
 //initialize socket
 const socketManager = require("./server-socket");
+
+
 
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
@@ -42,6 +45,31 @@ router.post("/initsocket", (req, res) => {
 // |------------------------------|
 // | write your API methods below!|
 // |------------------------------|
+
+router.post("/food-post", (req, res) => {
+  const newFoodPost = new FoodPost({
+    description:req.body.description,
+    posterid: req.user._id,
+    imgurl:req.body.imgurl,
+    title:req.body.title
+  });
+
+  newFoodPost.save().then((food_post)=>res.send(food_post));
+});
+
+router.get("/food-post", (req, res) => {
+  FoodPost.find({ }).then((food_posts) => {
+    res.send(food_posts)}).catch((error)=>{console.log(error);
+      res.status(500).send({ error: "Failed to fetch food posts" });;
+  });
+});
+
+
+
+
+
+
+
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

@@ -54,15 +54,15 @@ const Skeleton = () => {
         <h1>Try These!</h1>
         <FoodBlock
           image_src={tacos}
-          name="Tacos Al Pastor"
+          title="Tacos Al Pastor"
           description="Good Food"
         />
         <FoodBlock
           image_src={tacos}
-          name="Tacos Al Pastor"
+          title="Tacos Al Pastor"
           description="Good Food"
         />
-        <FoodBlock image_src={tacos} name="Tacos Al Pastor" description="" />
+        <FoodBlock image_src={tacos} title="Tacos Al Pastor" description="" />
 
         {/* Custom Recipe Component */}
         <div className="CustomRecipeRow">

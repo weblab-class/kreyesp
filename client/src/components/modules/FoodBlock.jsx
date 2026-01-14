@@ -6,7 +6,7 @@ const FoodBlock = (props) => {
   return (
     <div className="FoodBlock-component">
       <img className="FoodBlock-image" src={props.image_src} alt="Food Image" />
-      <h3 className="FoodBlock-name">{props.name}</h3>
+      <h3 className="FoodBlock-name">{props.title}</h3>
       <h4 className="FoodBlock-description">{props.description}</h4>
     </div>
   );
