@@ -55,7 +55,7 @@ const FoodPostInput = (props) => {
           type="file"
           id="imageUpload"
           name="image"
-          accept="image/png, image/jpeg, image/gif"
+          accept="image/png, image/jpeg, image/jpg, image/gif"
         ></input>
       </form>
 

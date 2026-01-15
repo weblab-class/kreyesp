@@ -1,6 +1,6 @@
 .FoodBlock-image{
-    width: 100%;
-    height: auto;
+    width: 280px;
+    height: 280px;
     border-radius: 8px;
     object-fit: cover;
     margin-bottom: 1px;
@@ -17,7 +17,7 @@
     padding: 12px;
     border-radius: 8px;
     display: inline-block;
-    width: clamp(220px, 33vw, 420px);
+    width: 306px;
     vertical-align: top;
     margin: 10px;
 }
