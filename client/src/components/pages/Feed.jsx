@@ -27,7 +27,7 @@ const Feed = () => {
 
   useEffect(() => {
     get("/api/food-post").then((food_posts) => {
-      setPosts(food_posts);
+      setPosts(food_posts.reverse());
     });
   }, []);
 

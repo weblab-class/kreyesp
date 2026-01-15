@@ -33,8 +33,8 @@ const FoodPostInput = (props) => {
 
   return (
     <div className="FoodPostInput-component">
-      <label className="FoodPostInput-label">{props.label}</label>
-
+      <label className="FoodPostInput-label">Enter Your Custom Recipe!</label>
+        <label className="FoodPostInput-label-title">Name</label>
         <textarea
           className="FoodPostInput-title"
           value={title}
@@ -43,6 +43,7 @@ const FoodPostInput = (props) => {
           cols={props.cols}
         />
 
+        <label className="FoodPostInput-label-title">Description</label>
         <textarea
           className="FoodPostInput-description"
           value={description}
