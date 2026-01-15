@@ -20,24 +20,9 @@ const Skeleton = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
   return (
+
     <div className="Skeleton-container">
-      <>
-        {userId ? (
-          <button
-            onClick={() => {
-              googleLogout();
-              handleLogout();
-            }}
-          >
-            Logout
-          </button>
-        ) : (
-          <GoogleLogin
-            onSuccess={handleLogin}
-            onError={(err) => console.log(err)}
-          />
-        )}
-      </>
+      
       <PageTitle
         title="Work In Progress Cooking"
         description=""

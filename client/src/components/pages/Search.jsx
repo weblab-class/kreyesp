@@ -21,23 +21,7 @@ const Search = () => {
 
   return (
     <div className="Search-container">
-      <>
-        {userId ? (
-          <button
-            onClick={() => {
-              googleLogout();
-              handleLogout();
-            }}
-          >
-            Logout
-          </button>
-        ) : (
-          <GoogleLogin
-            onSuccess={handleLogin}
-            onError={(err) => console.log(err)}
-          />
-        )}
-      </>
+      
       <PageTitle
         title="Search"
         description=""

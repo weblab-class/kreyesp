@@ -21,23 +21,7 @@ const Profile = () => {
 
   return (
     <div className="Profile-container">
-      <>
-        {userId ? (
-          <button
-            onClick={() => {
-              googleLogout();
-              handleLogout();
-            }}
-          >
-            Logout
-          </button>
-        ) : (
-          <GoogleLogin
-            onSuccess={handleLogin}
-            onError={(err) => console.log(err)}
-          />
-        )}
-      </>
+      
       <PageTitle
         title="Profile"
         description=""

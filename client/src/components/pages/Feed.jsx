@@ -33,23 +33,7 @@ const Feed = () => {
 
   return (
     <div className="Feed-container">
-      <>
-        {userId ? (
-          <button
-            onClick={() => {
-              googleLogout();
-              handleLogout();
-            }}
-          >
-            Logout
-          </button>
-        ) : (
-          <GoogleLogin
-            onSuccess={handleLogin}
-            onError={(err) => console.log(err)}
-          />
-        )}
-      </>
+      
       <PageTitle title="Feed" description="" />
 
       <div className="Feed-row">
