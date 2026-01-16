@@ -18,6 +18,8 @@ import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
 import FoodPostInput from "../modules/FoodPostInput";
 
+import {poster_name} from "../App";
+
 const Feed = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
@@ -33,16 +35,19 @@ const Feed = () => {
 
   return (
     <div className="Feed-container">
-      
+
       <PageTitle title="Feed" description="" />
 
       <div className="Feed-row">
         <FoodPostInput className="Feed-bar" label="Feed" rows={1} cols={100} addNewPost={addNewPost}/>
       </div>
 
+
+
         {posts.map((post, i) => (
     <FoodBlock
       key={i}
+      poster_name ={post.poster_name}
       image_src={post.imgurl} //imgurl in the future
       title={post.title}
       description={post.description}

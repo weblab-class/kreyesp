@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const FoodPostSchema = new mongoose.Schema({
   description:String,
+  poster_name:String,
   posterid: String,
   imgurl:String,
   title:String,

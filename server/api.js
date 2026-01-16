@@ -32,7 +32,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// store file in memory 
+// store file in memory
 const upload = multer({ storage: multer.memoryStorage() });
 
 
@@ -62,6 +62,7 @@ router.post("/initsocket", (req, res) => {
 router.post("/food-post", (req, res) => {
   const newFoodPost = new FoodPost({
     description:req.body.description,
+    poster_name: req.body.poster_name,
     posterid: req.user._id,
     imgurl:req.body.imgurl,
     title:req.body.title
@@ -82,12 +83,12 @@ router.get("/food-post", (req, res) => {
 //api's to cloudinary
 router.post("/uploaded-image", upload.single("image"), (req, res) =>{
   const dataUri = req.body.dataUri;
-  
+
   //no file uploaded
   if (!dataUri) {
     return res.status(400).send({ error: "Missing dataUri" });
   }
-  
+
 
   cloudinary.uploader.upload(
     dataUri, {

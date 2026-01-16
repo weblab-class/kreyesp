@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { post, get } from "../../utilities";
 import "./FoodPostInput.css";
 
+import {poster_name} from  "../App";
+
 const FoodPostInput = (props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -51,8 +53,10 @@ const FoodPostInput = (props) => {
           //do post to mongodb
           const body = {
             description: description,
+            poster_name: poster_name,
             imgurl: res.imgurl,
             title: title,
+
           };
           post("/api/food-post", body).then(props.addNewPost);
           setTitle("");
