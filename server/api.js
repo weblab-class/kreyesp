@@ -22,6 +22,19 @@ const router = express.Router();
 //initialize socket
 const socketManager = require("./server-socket");
 
+//cloudinary routes
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// store file in memory 
+const upload = multer({ storage: multer.memoryStorage() });
+
 
 
 router.post("/login", auth.login);
@@ -62,6 +75,30 @@ router.get("/food-post", (req, res) => {
     res.send(food_posts)}).catch((error)=>{console.log(error);
       res.status(500).send({ error: "Failed to fetch food posts" });;
   });
+});
+
+
+
+//api's to cloudinary
+router.post("/uploaded-image", upload.single("image"), (req, res) =>{
+  const dataUri = req.body.dataUri;
+  
+  //no file uploaded
+  if (!dataUri) {
+    return res.status(400).send({ error: "Missing dataUri" });
+  }
+  
+
+  cloudinary.uploader.upload(
+    dataUri, {
+      folder: "food_posts",
+        transformation: [{ width: 280, height: 280, crop: "fill", gravity: "auto" }],
+    }).then((result)=>{
+      res.send({imgurl:result.secure_url});
+    }).catch((err) => {
+      console.error("Cloudinary upload error:", err);
+      res.status(500).send({ error: "Cloudinary upload failed" });
+    });
 });
 
 

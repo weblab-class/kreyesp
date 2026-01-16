@@ -43,7 +43,7 @@ const Feed = () => {
         {posts.map((post, i) => (
     <FoodBlock
       key={i}
-      image_src={tacos} //imgurl in the future
+      image_src={post.imgurl} //imgurl in the future
       title={post.title}
       description={post.description}
     />
