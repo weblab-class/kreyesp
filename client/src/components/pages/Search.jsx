@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 
 import "../../utilities.css";
@@ -15,23 +15,29 @@ import FoodBlock from "../modules/FoodBlock";
 import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
 
-
 const Search = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
+  const [results, setResults] = useState([]);
+
+  const getResults = (x) => {
+    setResults([...x]);
+  };
+
+  console.log(results)
 
   return (
     <div className="Search-container">
-
-      <PageTitle
-        title="Search"
-        description=""
-      />
+      <PageTitle title="Search" description="" />
 
       <div className="Search-row">
-        <SearchBar className="Search-bar" label="Search" rows={1} cols={100} />
+        <SearchBar
+          className="Search-bar"
+          label="Search"
+          rows={1}
+          cols={100}
+          getResults={getResults}
+        />
       </div>
-
-
     </div>
   );
 };

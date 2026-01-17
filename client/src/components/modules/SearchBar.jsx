@@ -16,10 +16,10 @@ const SearchBar = (props) => {
 
   const handleSubmit = (event)=>{
     event.preventDefault();
-    console.log(inp)
+
     const body = {food_name: inp};
-    console.log(body)
-    get("/api/mongo-recipe", body).then((recipes)=>console.log(recipes));
+
+    get("/api/mongo-recipe", body).then(props.getResults);
     setInput("");
   };
 
