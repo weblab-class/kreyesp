@@ -33,24 +33,6 @@ const NavBar = (props) => {
           Feed
         </Link>
 
-        {/* {props.userId ? (
-          <googleLogout
-            clientId={GOOGLE_CLIENT_ID}
-            buttonText="Logout"
-            onSuccess={props.handleLogout}
-            onError={(err) => console.log(err)}
-            className="NavBar-link NavBar-login"
-          />
-        ) : (
-          <googleLogout
-            clientId={GOOGLE_CLIENT_ID}
-            buttonText="Login"
-            onSuccess={props.handleLogin}
-            onError={(err) => console.log(err)}
-            className="NavBar-link NavBar-login"
-          />
-        )} */}
-
 
           {userId ? (
             <button

@@ -9,7 +9,7 @@ import custom_recipe_banner from "../assets/Custom_Recipe_Banner.png";
 
 import { UserContext } from "../App";
 
-import TextBox from "../modules/TextBox";
+import SearchBar from "../modules/SearchBar";
 import PageTitle from "../modules/PageTitle";
 import FoodBlock from "../modules/FoodBlock";
 import CustomRecipe from "../modules/CustomRecipe";
@@ -21,14 +21,14 @@ const Search = () => {
 
   return (
     <div className="Search-container">
-      
+
       <PageTitle
         title="Search"
         description=""
       />
 
       <div className="Search-row">
-        <TextBox className="Search-bar" label="Search" rows={1} cols={100} />
+        <SearchBar className="Search-bar" label="Search" rows={1} cols={100} />
       </div>
 
 
