@@ -48,7 +48,7 @@ const Feed = () => {
     <FoodBlock
       key={i}
       poster_name ={post.poster_name}
-      image_src={post.imgurl} //imgurl in the future
+      image_src={post.imgurl} 
       title={post.title}
       description={post.description}
     />

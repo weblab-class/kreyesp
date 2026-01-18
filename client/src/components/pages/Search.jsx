@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import {useNavigate} from "react-router-dom";
 
 import "../../utilities.css";
 import "./Search.css";
@@ -18,12 +19,17 @@ import NavBar from "../modules/NavBar";
 const Search = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [results, setResults] = useState([]);
+  const navigate = useNavigate();
 
   const getResults = (x) => {
     setResults([...x]);
   };
 
   console.log(results)
+
+  const handleClick = (recipe) =>{
+    navigate("/recipe", {state:{recipe:recipe}});
+  }
 
   return (
     <div className="Search-container">
@@ -38,6 +44,15 @@ const Search = () => {
           getResults={getResults}
         />
       </div>
+
+      {results.map((result, i) => (
+    <FoodBlock
+      key={i}
+      image_src={result.image} 
+      title={result.meal_name}
+      onClick={()=>handleClick(result)}
+    />
+  ))}
     </div>
   );
 };

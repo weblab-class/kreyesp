@@ -6,6 +6,7 @@ import NotFound from "./components/pages/NotFound";
 import Search from "./components/pages/Search";
 import Feed from "./components/pages/Feed";
 import Profile from "./components/pages/Profile";
+import Recipe from "./components/pages/Recipe";
 
 import {
   createBrowserRouter,
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="/search" element={<Search />}/>
        <Route path="/feed" element={<Feed />}/>
        <Route path="/profile" element={<Profile/>}/>
+       <Route path="/recipe" element={<Recipe/>}/>
 
     </Route>
   )

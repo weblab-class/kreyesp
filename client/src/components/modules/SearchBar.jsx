@@ -8,7 +8,7 @@ const SearchBar = (props) => {
   const changeBox = (event) => {
 
     setInput(event.target.value);
-    console.log("Changed value: " + inp)
+    
 
     event.target.style.height = "auto";
     event.target.style.height = `${event.target.scrollHeight}px`;

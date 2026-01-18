@@ -4,7 +4,7 @@ import "./FoodBlock.css";
 
 const FoodBlock = (props) => {
   return (
-    <div className="FoodBlock-component">
+    <div className="FoodBlock-component" onClick= {props.onClick}>
       <h2>{props.poster_name}</h2>
       <img className="FoodBlock-image" src={props.image_src} alt="Food Image" />
       <h3 className="FoodBlock-name">{props.title}</h3>
