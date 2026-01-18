@@ -15,6 +15,7 @@ import PageTitle from "../modules/PageTitle";
 import FoodBlock from "../modules/FoodBlock";
 import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
+import RecipeDisplay from "../modules/RecipeDisplay";
 
 const Recipe = () => {
   // meal_name: String,
@@ -31,7 +32,7 @@ const Recipe = () => {
     <div className="Recipe-container">
       <PageTitle title={recipe.meal_name} description="" />
 
-      <FoodBlock image_src={recipe.image} title={recipe.meal_name} />
+      <RecipeDisplay image={recipe.image} meal_name={recipe.meal_name} ingredients={recipe.ingredients} measurements={recipe.measurements} instructions = {recipe.instructions}/>
     </div>
   );
 };
