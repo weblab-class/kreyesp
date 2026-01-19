@@ -48,7 +48,7 @@ const Search = () => {
       {results.map((result, i) => (
     <FoodBlock
       key={i}
-      image_src={result.image} 
+      image_src={result.image}
       title={result.meal_name}
       onClick={()=>handleClick(result)}
     />

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { post, get } from "../../utilities";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import "../../utilities.css";
 import "./Skeleton.css";
@@ -11,7 +11,7 @@ import custom_recipe_banner from "../assets/Custom_Recipe_Banner.png";
 
 import { UserContext } from "../App";
 
-import TextBox from "../modules/TextBox";
+import SearchBar from "../modules/SearchBar";
 import PageTitle from "../modules/PageTitle";
 import FoodBlock from "../modules/FoodBlock";
 import CustomRecipe from "../modules/CustomRecipe";
@@ -20,8 +20,16 @@ import NavBar from "../modules/NavBar";
 const Skeleton = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [foodPreviews, setFoodPreviews] = useState([]);
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
+  //search results
+  const getResults = (x) => {
+    setResults([...x]);
+    navigate("/search", { state: { results: x } });
+  };
+
+  //move to the recipe if click on preview
   const handleClick = (recipe) => {
     navigate("/recipe", { state: { recipe: recipe } });
   };
@@ -41,7 +49,13 @@ const Skeleton = () => {
       <img className="Food-banner" src={foodBanner} alt="food banner" />
 
       <div className="Search-row">
-        <TextBox className="Search-bar" label="Search" rows={1} cols={100} />
+        <SearchBar
+          className="Search-bar"
+          label="Search"
+          rows={1}
+          cols={100}
+          getResults={getResults}
+        />
       </div>
 
       {/* Food Recommendation Component */}
