@@ -89,56 +89,61 @@ router.get("/food-post", (req, res) => {
     });
 });
 
-
 //Recipe MongoDB requests
 router.get("/mongo-recipe", (req, res) => {
   //$options: "i" does case insensitive
-  Recipe.find({meal_name: { $regex: req.query.food_name, $options: "i" }}).limit(20).then((recipes)=>{
+  Recipe.find({ meal_name: { $regex: req.query.food_name, $options: "i" } })
+    .limit(20)
+    .then((recipes) => {
       //Check to see if there is a recipe in the mongodb, if now, we make a call to external recipe api
 
-      if(recipes.length!==0){
+      if (recipes.length !== 0) {
         res.send(recipes);
-      } else{
+      } else {
         //check external api
-        
-        getExternalRecipes(req.query.food_name).then((external_recipes)=>{
 
-          if(external_recipes.length!==0){
+        getExternalRecipes(req.query.food_name).then((external_recipes) => {
+          if (external_recipes.length !== 0) {
             //send recipes to mongodb
-            for (const [index, external_recipe] of external_recipes.entries()){
+            for (const [index, external_recipe] of external_recipes.entries()) {
               storeRecipe(external_recipe);
-            };
-            res.send(external_recipes)
-          } else{
+            }
+            res.send(external_recipes);
+          } else {
             //if no external recipes, send out an empty array
-            res.send([])
-          };
+            res.send([]);
+          }
         });
       }
-  });
+    });
 });
 
-const storeRecipe = (recipe)=>{
-  const newRecipe = new Recipe({meal_name: recipe.meal_name,
-        instructions: recipe.instructions,
-        image: recipe.image,
-        ingredients: recipe.ingredients,
-        measurements: recipe.measurements
-    });
+const storeRecipe = (recipe) => {
+  const newRecipe = new Recipe({
+    is_custom: false,
+    user_id: null,
+    meal_name: recipe.meal_name,
+    instructions: recipe.instructions,
+    image: recipe.image,
+    ingredients: recipe.ingredients,
+    measurements: recipe.measurements,
+  });
   newRecipe.save();
-}
+};
 
 router.post("/mongo-recipe", (req, res) => {
-   const newRecipe = new Recipe({meal_name: req.body.meal_name,
-        instructions: req.body.instructions,
-        image: req.body.image,
-        ingredients: req.body.ingredients,
-        measurements: req.body.measurements
-    });
+  const newRecipe = new Recipe({
+    is_custom: true,
+    user_id: req.user._id,
+    meal_name: req.body.meal_name,
+    instructions: req.body.instructions,
+    image: req.body.image,
+    ingredients: req.body.ingredients,
+    measurements: req.body.measurements,
+  });
 
   newRecipe.save().then((recipe) => res.send(recipe));
 });
-
 
 //Recipe api requests (currently MealDB)
 const recipe_website = "https://www.themealdb.com/api/json/v1/1/search.php";
@@ -153,31 +158,30 @@ const getExternalRecipes = async (food_name) => {
     const ingredients = [];
     const measurements = [];
 
-    for (let i = 1; i<21; i++){
+    for (let i = 1; i < 21; i++) {
       const ingredient = meal[`strIngredient${i}`];
       const measurement = meal[`strMeasure${i}`];
 
       if (ingredient !== "" && measurement !== "") {
         ingredients.push(ingredient);
-        measurements.push(measurement)
+        measurements.push(measurement);
       }
     }
 
+    const recipe_info = {
+      meal_name: meal["strMeal"],
+      instructions: meal["strInstructions"],
+      image: meal["strMealThumb"],
+      ingredients: ingredients,
+      measurements: measurements,
+    };
 
-    const recipe_info = {meal_name: meal["strMeal"],
-        instructions: meal["strInstructions"],
-        image: meal["strMealThumb"],
-        ingredients: ingredients,
-        measurements: measurements
-    }
+    recipes.push(recipe_info);
 
-    recipes.push(recipe_info)
-
-
-    console.log(recipe_info)
+    console.log(recipe_info);
     // console.log("This is meal #" + index);
     // console.log(util.inspect(meal));
-  };
+  }
 
   // console.log(util.inspect(response.data.meals));
   return recipes;
@@ -205,7 +209,6 @@ const getExternalRecipes = async (food_name) => {
 //       }
 //     }
 
-
 //     const recipe_info = {meal_name: meal["strMeal"],
 //         instructions: meal["strInstructions"],
 //         image: meal["strMealThumb"],
@@ -214,7 +217,6 @@ const getExternalRecipes = async (food_name) => {
 //     }
 
 //     recipes.push(recipe_info)
-
 
 //     console.log(recipe_info)
 
@@ -225,6 +227,20 @@ const getExternalRecipes = async (food_name) => {
 //   // console.log(util.inspect(response.data.meals));
 //   res.send(recipes);
 // });
+
+
+
+
+//random recipes for homepage
+router.get("/random-recipes", (req, res) => {
+  //get 3 random samples
+  Recipe.aggregate([{$sample:{size:3}}]).then((random_samples)=>{res.send(random_samples)});
+
+})
+
+
+
+
 
 //api's to cloudinary
 //food-posts image upload

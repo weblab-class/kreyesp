@@ -1,5 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { post, get } from "../../utilities";
+import {useNavigate} from "react-router-dom";
 
 import "../../utilities.css";
 import "./Skeleton.css";
@@ -15,18 +17,26 @@ import FoodBlock from "../modules/FoodBlock";
 import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
 
-
 const Skeleton = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
+  const [foodPreviews, setFoodPreviews] = useState([]);
+  const navigate = useNavigate();
+
+  const handleClick = (recipe) => {
+    navigate("/recipe", { state: { recipe: recipe } });
+  };
+
+  //render 3 random recommendations
+  useEffect(() => {
+    const body = {};
+    get("/api/random-recipes", body).then((recipes) =>
+      setFoodPreviews(recipes)
+    );
+  }, []);
 
   return (
-
     <div className="Skeleton-container">
-      
-      <PageTitle
-        title="Work In Progress Cooking"
-        description=""
-      />
+      <PageTitle title="Work In Progress Cooking" description="" />
 
       <img className="Food-banner" src={foodBanner} alt="food banner" />
 
@@ -37,17 +47,14 @@ const Skeleton = () => {
       {/* Food Recommendation Component */}
       <div className="FoodGrid">
         <h1>Try These!</h1>
-        <FoodBlock
-          image_src={tacos}
-          title="Tacos Al Pastor"
-          description="Good Food"
-        />
-        <FoodBlock
-          image_src={tacos}
-          title="Tacos Al Pastor"
-          description="Good Food"
-        />
-        <FoodBlock image_src={tacos} title="Tacos Al Pastor" description="" />
+        {foodPreviews.map((result, i) => (
+          <FoodBlock
+            key={i}
+            image_src={result.image}
+            title={result.meal_name}
+            onClick={() => handleClick(result)}
+          />
+        ))}
 
         {/* Custom Recipe Component */}
         <div className="CustomRecipeRow">

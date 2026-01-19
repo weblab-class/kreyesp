@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./CustomRecipe.css";
 import { post, get } from "../../utilities";
 import TextBox from "./TextBox";
+import { UserContext } from "../App";
 
 const CustomRecipe = (props) => {
+  const { userId, handleLogin, handleLogout } = useContext(UserContext);
+
   const [name, setName] = useState("");
   const [ingredients, setIngredients] = useState([""]);
   const [measurements, setMeasurements] = useState([""]);
@@ -28,53 +31,52 @@ const CustomRecipe = (props) => {
   const changeIngredients = (i, event) => {
     //create copy of array
     const new_ingredients = [...ingredients];
-    new_ingredients[i] = event.target.value
+    new_ingredients[i] = event.target.value;
     setIngredients(new_ingredients);
   };
 
   const changeMeasurements = (i, event) => {
     //create copy of array
     const new_measurements = [...measurements];
-    new_measurements[i] = event.target.value
+    new_measurements[i] = event.target.value;
     setMeasurements(new_measurements);
   };
-
 
   const changeInstructions = (event) => {
     setInstructions(event.target.value);
     autoResizeBox(event);
   };
 
-  const handleAdd = ()=>{
+  const handleAdd = () => {
     setIngredients([...ingredients, ""]);
     setMeasurements([...measurements, ""]);
-  }
+  };
 
-  const handleRemove = (i)=>{
+  const handleRemove = (i) => {
     //create copy of array
     const new_ingredients = [...ingredients];
     const new_measurements = [...measurements];
-    new_ingredients.splice(i, 1)
-    new_measurements.splice(i, 1)
+    new_ingredients.splice(i, 1);
+    new_measurements.splice(i, 1);
     setIngredients(new_ingredients);
     setMeasurements(new_measurements);
-  }
-
+  };
 
   //encode file data at dataUri string
-    const fileToDataUri = (file) =>
-      new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-  
-    const handleSubmit = (event) => {
-      event.preventDefault();
+  const fileToDataUri = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (userId) {
       // do a post to cloudinary
       let imgurl = "";
-  
+
       if (image) {
         fileToDataUri(image)
           .then((dataUri) => {
@@ -88,7 +90,7 @@ const CustomRecipe = (props) => {
               instructions: instructions,
               image: res.imgurl,
               ingredients: ingredients,
-              measurements: measurements
+              measurements: measurements,
             };
             post("/api/mongo-recipe", body).then();
             setIngredients([""]);
@@ -96,18 +98,25 @@ const CustomRecipe = (props) => {
             setName("");
             setInstructions("");
             setImage(null);
-  
+
             //reset the image upload area after post upload
             const fileInput = document.getElementById("imageUpload");
             if (fileInput) fileInput.value = "";
           });
       }
-    };
+    } else {
+      if (!userId) {
+        alert("Please log in to save a recipe.");
+      };
+      if(!image){
+        alert("Please upload an image");
+      }
+    }
+  };
 
   return (
     <div className="CustomRecipe-component">
       <h1 className="CustomRecipe-title">Save Your Own:</h1>
-
 
       <label htmlFor="imageUpload">Choose an image to upload:</label>
       {/* Image upload button */}
@@ -136,26 +145,35 @@ const CustomRecipe = (props) => {
       />
 
       <div className="CustomRecipe-ingredients-component">
-        <label className="CustomRecipe-label-ingredients">Ingredients and Measurment</label>
-        <button className="CustomRecipe-add-ingredient" onClick={handleAdd}>+</button>
+        <label className="CustomRecipe-label-ingredients">
+          Ingredients and Measurment
+        </label>
+        <button className="CustomRecipe-add-ingredient" onClick={handleAdd}>
+          +
+        </button>
         {/* Creates dynamic ingredients lists */}
         {ingredients.map((ingredient, i) => (
           <div key={i} className="CustomRecipe-ingredient-measurement-row">
             <textarea
               className="CustomRecipe-ingredients"
               value={ingredient}
-              onChange={(event)=>changeIngredients(i,event)}
+              onChange={(event) => changeIngredients(i, event)}
               rows={props.rows ?? 1}
               cols={props.cols}
             />
             <textarea
               className="CustomRecipe-measurements"
               value={measurements[i]}
-              onChange={(event)=>changeMeasurements(i,event)}
+              onChange={(event) => changeMeasurements(i, event)}
               rows={props.rows ?? 1}
               cols={props.cols}
             />
-            <button className="CustomRecipe-remove-ingredient" onClick={()=>handleRemove(i)}>-</button>
+            <button
+              className="CustomRecipe-remove-ingredient"
+              onClick={() => handleRemove(i)}
+            >
+              -
+            </button>
           </div>
         ))}
       </div>
@@ -168,7 +186,9 @@ const CustomRecipe = (props) => {
         rows={props.rows ?? 1}
         cols={props.cols}
       />
-      <button className="CustomRecipe-submit" onClick={handleSubmit}>Save</button>
+      <button className="CustomRecipe-submit" onClick={handleSubmit}>
+        Save
+      </button>
     </div>
   );
 };
