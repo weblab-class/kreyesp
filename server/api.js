@@ -128,16 +128,16 @@ const storeRecipe = (recipe)=>{
   newRecipe.save();
 }
 
-// router.post("/mongo-recipe", (req, res) => {
-//    const newRecipe = new Recipe({meal_name: req.body.meal_name,
-//         instructions: req.body.instructions,
-//         image: req.body.image,
-//         ingredients: req.body.ingredients,
-//         measurements: req.body.measurements
-//     });
+router.post("/mongo-recipe", (req, res) => {
+   const newRecipe = new Recipe({meal_name: req.body.meal_name,
+        instructions: req.body.instructions,
+        image: req.body.image,
+        ingredients: req.body.ingredients,
+        measurements: req.body.measurements
+    });
 
-//   newRecipe.save().then((recipe) => res.send(recipe));
-// });
+  newRecipe.save().then((recipe) => res.send(recipe));
+});
 
 
 //Recipe api requests (currently MealDB)
@@ -227,6 +227,7 @@ const getExternalRecipes = async (food_name) => {
 // });
 
 //api's to cloudinary
+//food-posts image upload
 router.post("/uploaded-image", upload.single("image"), (req, res) => {
   const dataUri = req.body.dataUri;
 
@@ -238,6 +239,32 @@ router.post("/uploaded-image", upload.single("image"), (req, res) => {
   cloudinary.uploader
     .upload(dataUri, {
       folder: "food_posts",
+      transformation: [
+        { width: 280, height: 280, crop: "fill", gravity: "auto" },
+      ],
+    })
+    .then((result) => {
+      //return the image url
+      res.send({ imgurl: result.secure_url });
+    })
+    .catch((err) => {
+      console.error("Cloudinary upload error:", err);
+      res.status(500).send({ error: "Cloudinary upload failed" });
+    });
+});
+
+//custom recipe image upload
+router.post("/custom-recipe-image", upload.single("image"), (req, res) => {
+  const dataUri = req.body.dataUri;
+
+  //no file uploaded
+  if (!dataUri) {
+    return res.status(400).send({ error: "Missing dataUri" });
+  }
+
+  cloudinary.uploader
+    .upload(dataUri, {
+      folder: "custom_recipes",
       transformation: [
         { width: 280, height: 280, crop: "fill", gravity: "auto" },
       ],

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./CustomRecipe.css";
+import { post, get } from "../../utilities";
 import TextBox from "./TextBox";
 
 const CustomRecipe = (props) => {
@@ -7,10 +8,16 @@ const CustomRecipe = (props) => {
   const [ingredients, setIngredients] = useState([""]);
   const [measurements, setMeasurements] = useState([""]);
   const [instructions, setInstructions] = useState("");
+  const [image, setImage] = useState(null);
 
   const autoResizeBox = (event) => {
     event.target.style.height = "auto";
     event.target.style.height = `${event.target.scrollHeight}px`;
+  };
+
+  const changeImage = (event) => {
+    const file = event.target.files[0] ?? null;
+    setImage(file);
   };
 
   const changeName = (event) => {
@@ -53,9 +60,71 @@ const CustomRecipe = (props) => {
     setMeasurements(new_measurements);
   }
 
+
+  //encode file data at dataUri string
+    const fileToDataUri = (file) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+  
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      // do a post to cloudinary
+      let imgurl = "";
+  
+      if (image) {
+        fileToDataUri(image)
+          .then((dataUri) => {
+            //do post to cloudinary
+            return post("/api/custom-recipe-image", { dataUri });
+          })
+          .then((res) => {
+            //do post to mongodb
+            const body = {
+              meal_name: name,
+              instructions: instructions,
+              image: res.imgurl,
+              ingredients: ingredients,
+              measurements: measurements
+            };
+            post("/api/mongo-recipe", body).then();
+            setIngredients([""]);
+            setMeasurements([""]);
+            setName("");
+            setInstructions("");
+            setImage(null);
+  
+            //reset the image upload area after post upload
+            const fileInput = document.getElementById("imageUpload");
+            if (fileInput) fileInput.value = "";
+          });
+      }
+    };
+
   return (
     <div className="CustomRecipe-component">
       <h1 className="CustomRecipe-title">Save Your Own:</h1>
+
+
+      <label htmlFor="imageUpload">Choose an image to upload:</label>
+      {/* Image upload button */}
+      <form
+        className="CustomRecipe-image-upload"
+        action="/upload"
+        method="post"
+        encType="multipart/form-data"
+      >
+        <input
+          type="file"
+          id="imageUpload"
+          name="image"
+          accept="image/png, image/jpeg, image/jpg, image/gif"
+          onChange={changeImage}
+        ></input>
+      </form>
 
       <label className="CustomRecipe-label-name">Name</label>
       <textarea
@@ -99,7 +168,7 @@ const CustomRecipe = (props) => {
         rows={props.rows ?? 1}
         cols={props.cols}
       />
-      <button>Save</button>
+      <button className="CustomRecipe-submit" onClick={handleSubmit}>Save</button>
     </div>
   );
 };

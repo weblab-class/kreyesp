@@ -25,7 +25,7 @@ const FoodPostInput = (props) => {
   };
 
   const changeImage = (event) => {
-    const file = event.target.files?.[0] ?? null;
+    const file = event.target.files[0] ?? null;
     setImage(file);
   };
 
