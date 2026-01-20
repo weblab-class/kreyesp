@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 import "../../utilities.css";
 import "./Search.css";
@@ -18,8 +18,18 @@ import NavBar from "../modules/NavBar";
 
 const Search = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
-  const [results, setResults] = useState([]);
+  
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const [results, setResults] = useState(state.results ??[]);
+
+  useEffect(()=>{
+    if(state.results){
+      navigate(".", {replace:true, state:[]})
+    }
+  },[])
+
+
 
   const getResults = (x) => {
     setResults([...x]);
