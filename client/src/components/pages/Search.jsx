@@ -21,10 +21,11 @@ const Search = () => {
   
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [results, setResults] = useState(state.results ??[]);
+  //handles case where we have results from another page, or if we don't have anything we just initialize empty array
+  const [results, setResults] = useState(state?.results ??[]);
 
   useEffect(()=>{
-    if(state.results){
+    if(state?.results){
       navigate(".", {replace:true, state:[]})
     }
   },[])

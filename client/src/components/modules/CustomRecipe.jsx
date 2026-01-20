@@ -77,7 +77,7 @@ const CustomRecipe = (props) => {
       // do a post to cloudinary
       let imgurl = "";
 
-      if (image) {
+      if (image &&name) {
         fileToDataUri(image)
           .then((dataUri) => {
             //do post to cloudinary
@@ -110,6 +110,9 @@ const CustomRecipe = (props) => {
       };
       if(!image){
         alert("Please upload an image");
+      }
+      if(!name){
+        alert("Please upload a name");
       }
     }
   };

@@ -89,6 +89,8 @@ router.get("/food-post", (req, res) => {
     });
 });
 
+
+
 //Recipe MongoDB requests
 router.get("/mongo-recipe", (req, res) => {
   //$options: "i" does case insensitive
@@ -188,6 +190,16 @@ const getExternalRecipes = async (food_name) => {
   // console.log(util.inspect(response.data.meals));
   return recipes;
 };
+
+
+//profile-recipes request
+router.get("/profile-recipes", (req, res) => {
+  //get 3 random samples
+  Recipe.find({ user_id: req.user._id, is_custom:true }).then((custom_recipes)=>{res.send(custom_recipes)});
+
+})
+
+
 
 // router.get("/recipe", async (req, res) => {
 //   const food_name = req.query.food_name;
