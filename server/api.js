@@ -154,7 +154,7 @@ const getExternalRecipes = async (food_name) => {
   const meal_response = response.data.meals;
   let recipes = [];
 
-  for (const [index, meal] of meal_response.entries()) {
+  if(meal_response){for (const [index, meal] of meal_response.entries()) {
     const ingredients = [];
     const measurements = [];
 
@@ -181,7 +181,9 @@ const getExternalRecipes = async (food_name) => {
     console.log(recipe_info);
     // console.log("This is meal #" + index);
     // console.log(util.inspect(meal));
-  }
+  }}
+
+  
 
   // console.log(util.inspect(response.data.meals));
   return recipes;

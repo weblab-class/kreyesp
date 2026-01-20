@@ -45,7 +45,7 @@ const Search = () => {
         />
       </div>
 
-      {results.map((result, i) => (
+      {results.length>0 && results.map((result, i) => (
     <FoodBlock
       key={i}
       image_src={result.image}
