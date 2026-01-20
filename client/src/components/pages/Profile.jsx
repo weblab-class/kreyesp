@@ -33,7 +33,7 @@ const Profile = () => {
         setCustomRecipes(recipes)
       );
       //////////////USERNAME RESETS UPON REFRESH, NEED TO FIGURE OUT HOW TO FIX THAT
-      setUsername(username);
+      // setUsername(username);
     }, []);
 
     //move to the recipe if click on preview
