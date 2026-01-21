@@ -8,7 +8,7 @@ const SearchBar = (props) => {
   const changeBox = (event) => {
 
     setInput(event.target.value);
-    
+
 
     event.target.style.height = "auto";
     event.target.style.height = `${event.target.scrollHeight}px`;
@@ -16,11 +16,16 @@ const SearchBar = (props) => {
 
   const handleSubmit = (event)=>{
     event.preventDefault();
+    //this still searches up single characters in words
+    //make sure to only look up something if it is non-blank
+    if(inp.trim()){
+       const body = {food_name: inp};
 
-    const body = {food_name: inp};
+      get("/api/mongo-recipe", body).then(props.getResults);
+      setInput("");
+    }
 
-    get("/api/mongo-recipe", body).then(props.getResults);
-    setInput("");
+
   };
 
 
@@ -36,9 +41,14 @@ const SearchBar = (props) => {
           onChange={changeBox}
           rows={props.rows??1}
           cols={props.cols}
+          onKeyDown={(event)=>{
+          if(event.key==="Enter"){
+            handleSubmit(event)
+          }
+        }}
         />
 
-        <button className="SearchBar-button" onClick={handleSubmit}>Enter</button>
+        <button className="SearchBar-button" onClick={handleSubmit} >Enter</button>
       </div>
     </div>
   );

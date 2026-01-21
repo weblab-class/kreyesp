@@ -53,7 +53,6 @@ const FoodPostInput = (props) => {
           //do post to mongodb
           const body = {
             description: description,
-            poster_name: poster_name,
             imgurl: res.imgurl,
             title: title,
 

@@ -12,6 +12,8 @@ const CustomRecipe = (props) => {
   const [measurements, setMeasurements] = useState([""]);
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
+  const [is_public, setIs_Public] = useState(false);
+  const [is_public_text, setIs_Public_Text] = useState("Private");
 
   const autoResizeBox = (event) => {
     event.target.style.height = "auto";
@@ -62,6 +64,17 @@ const CustomRecipe = (props) => {
     setMeasurements(new_measurements);
   };
 
+  const handleCheck = () => {
+    setIs_Public(!is_public);
+    if (is_public_text === "Public") {
+      setIs_Public_Text("Private");
+    } else {
+      setIs_Public_Text("Public");
+    }
+  };
+  console.log(is_public)
+
+
   //encode file data at dataUri string
   const fileToDataUri = (file) =>
     new Promise((resolve, reject) => {
@@ -77,7 +90,7 @@ const CustomRecipe = (props) => {
       // do a post to cloudinary
       let imgurl = "";
 
-      if (image &&name) {
+      if (image && name) {
         fileToDataUri(image)
           .then((dataUri) => {
             //do post to cloudinary
@@ -86,6 +99,7 @@ const CustomRecipe = (props) => {
           .then((res) => {
             //do post to mongodb
             const body = {
+              is_public:is_public,
               meal_name: name,
               instructions: instructions,
               image: res.imgurl,
@@ -107,11 +121,11 @@ const CustomRecipe = (props) => {
     } else {
       if (!userId) {
         alert("Please log in to save a recipe.");
-      };
-      if(!image){
+      }
+      if (!image) {
         alert("Please upload an image");
       }
-      if(!name){
+      if (!name) {
         alert("Please upload a name");
       }
     }
@@ -120,6 +134,16 @@ const CustomRecipe = (props) => {
   return (
     <div className="CustomRecipe-component">
       <h1 className="CustomRecipe-title">Save Your Own:</h1>
+
+      <div className="CustomRecipe-checkbox-row">
+
+        <input
+          type="checkbox"
+          checked={is_public}
+          onChange={handleCheck}
+        ></input>
+         <label>{is_public_text}</label>
+      </div>
 
       <label htmlFor="imageUpload">Choose an image to upload:</label>
       {/* Image upload button */}

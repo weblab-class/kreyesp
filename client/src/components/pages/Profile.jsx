@@ -23,7 +23,8 @@ const Profile = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
   const [customRecipes, setCustomRecipes] = useState([]);
-  
+  const [name, setName] = useState("");
+
   const navigate = useNavigate();
 
   //get all custom recipes to appear
@@ -32,8 +33,10 @@ const Profile = () => {
       get("/api/profile-recipes", body).then((recipes) =>
         setCustomRecipes(recipes)
       );
-      //////////////USERNAME RESETS UPON REFRESH, NEED TO FIGURE OUT HOW TO FIX THAT
-      // setUsername(username);
+     
+      get("/api/user-name").then((user)=>{
+        setName(user.name)
+    })
     }, []);
 
     //move to the recipe if click on preview
@@ -43,13 +46,13 @@ const Profile = () => {
 
   return (
     <div className="Profile-container">
-      
+
       <PageTitle
         title="Profile"
         description=""
       />
 
-      <h2>{poster_name}</h2>
+      <h2>{name}</h2>
 
       {customRecipes.map((result, i) => (
           <FoodBlock

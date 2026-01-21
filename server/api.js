@@ -69,7 +69,7 @@ router.post("/initsocket", (req, res) => {
 router.post("/food-post", (req, res) => {
   const newFoodPost = new FoodPost({
     description: req.body.description,
-    poster_name: req.body.poster_name,
+    poster_name: req.user.name,
     posterid: req.user._id,
     imgurl: req.body.imgurl,
     title: req.body.title,
@@ -93,8 +93,17 @@ router.get("/food-post", (req, res) => {
 
 //Recipe MongoDB requests
 router.get("/mongo-recipe", (req, res) => {
+  let query = { meal_name: { $regex: req.query.food_name, $options: "i" } }
+
+  if(req.user){
+    query['$or'] = [{is_public:true}, {$and:[{is_public:false }, {user_id:req.user._id}]}];
+  }
+  else{
+    query['$or'] = [{is_public:true}];
+  }
+
   //$options: "i" does case insensitive
-  Recipe.find({ meal_name: { $regex: req.query.food_name, $options: "i" } })
+  Recipe.find(query)
     .limit(20)
     .then((recipes) => {
       //Check to see if there is a recipe in the mongodb, if now, we make a call to external recipe api
@@ -122,6 +131,7 @@ router.get("/mongo-recipe", (req, res) => {
 
 const storeRecipe = (recipe) => {
   const newRecipe = new Recipe({
+    is_public:true,
     is_custom: false,
     user_id: null,
     meal_name: recipe.meal_name,
@@ -135,6 +145,7 @@ const storeRecipe = (recipe) => {
 
 router.post("/mongo-recipe", (req, res) => {
   const newRecipe = new Recipe({
+    is_public:req.body.is_public,
     is_custom: true,
     user_id: req.user._id,
     meal_name: req.body.meal_name,
@@ -185,7 +196,7 @@ const getExternalRecipes = async (food_name) => {
     // console.log(util.inspect(meal));
   }}
 
-  
+
 
   // console.log(util.inspect(response.data.meals));
   return recipes;
@@ -194,7 +205,6 @@ const getExternalRecipes = async (food_name) => {
 
 //profile-recipes request
 router.get("/profile-recipes", (req, res) => {
-  //get 3 random samples
   Recipe.find({ user_id: req.user._id, is_custom:true }).then((custom_recipes)=>{res.send(custom_recipes)});
 
 })
@@ -248,8 +258,25 @@ router.get("/profile-recipes", (req, res) => {
 //random recipes for homepage
 router.get("/random-recipes", (req, res) => {
   //get 3 random samples
-  Recipe.aggregate([{$sample:{size:3}}]).then((random_samples)=>{res.send(random_samples)});
+  Recipe.aggregate([{$match : {
+         is_public:true
+      }}, {$sample:{size:3}}]).then((random_samples)=>{res.send(random_samples)});
 
+})
+
+
+
+//get username
+router.get("/user-name", (req, res)=>{
+  if (!req.user._id){
+    res.send({name:""})
+  }else{
+
+    User.findById(req.user._id).then((user)=>{
+      res.send({name:user.name})
+    })
+  }
+  ;
 })
 
 
