@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState } from "react";
 import { post, get } from "../../utilities";
 import "./FoodPostInput.css";
+import { UserContext } from "../App";
 
-import {poster_name} from  "../App";
+import { poster_name } from "../App";
 
 const FoodPostInput = (props) => {
+  const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
@@ -40,32 +42,37 @@ const FoodPostInput = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // do a post to cloudinary
-    let imgurl = "";
+    if (userId) {
+      // do a post to cloudinary
+      let imgurl = "";
 
-    if (image) {
-      fileToDataUri(image)
-        .then((dataUri) => {
-          //do post to cloudinary
-          return post("/api/uploaded-image", { dataUri });
-        })
-        .then((res) => {
-          //do post to mongodb
-          const body = {
-            description: description,
-            imgurl: res.imgurl,
-            title: title,
+      if (image) {
+        fileToDataUri(image)
+          .then((dataUri) => {
+            //do post to cloudinary
+            return post("/api/uploaded-image", { dataUri });
+          })
+          .then((res) => {
+            //do post to mongodb
+            const body = {
+              description: description,
+              imgurl: res.imgurl,
+              title: title,
+            };
+            post("/api/food-post", body).then(props.addNewPost);
+            setTitle("");
+            setDescription("");
+            setImage(null);
 
-          };
-          post("/api/food-post", body).then(props.addNewPost);
-          setTitle("");
-          setDescription("");
-          setImage(null);
-
-          //reset the image upload area after post upload
-          const fileInput = document.getElementById("imageUpload");
-          if (fileInput) fileInput.value = "";
-        });
+            //reset the image upload area after post upload
+            const fileInput = document.getElementById("imageUpload");
+            if (fileInput) fileInput.value = "";
+          });
+      }
+    } else {
+      if (!userId) {
+        alert("Please log in to save a recipe.");
+      }
     }
   };
 
