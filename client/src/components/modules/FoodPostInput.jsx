@@ -3,13 +3,22 @@ import { post, get } from "../../utilities";
 import "./FoodPostInput.css";
 import { UserContext } from "../App";
 
-import { poster_name } from "../App";
+
+import {useNavigate, useLocation} from "react-router-dom";
 
 const FoodPostInput = (props) => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [posterName, setPosterName] = useState("");
+
+
+  useEffect(() => {
+      get("/api/user-name").then((user)=>{
+              setPosterName(user.name)
+          })
+    }, []);
 
   const autoResizeBox = (event) => {
     event.target.style.height = "auto";
@@ -55,6 +64,7 @@ const FoodPostInput = (props) => {
           .then((res) => {
             //do post to mongodb
             const body = {
+                poster_name: posterName,
               description: description,
               imgurl: res.imgurl,
               title: title,
