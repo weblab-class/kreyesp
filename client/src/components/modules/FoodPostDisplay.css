@@ -1,3 +1,9 @@
+.FoodPostDisplay-component{width: 100%;
+  max-width: 900px;
+  margin: 12px auto;
+  cursor: pointer;}
+
+
 .FoodPostDisplay-image {
   height: 567px;
   width: 498px;

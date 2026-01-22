@@ -53,8 +53,9 @@ const Profile = () => {
       />
 
       <h2>{name}</h2>
-
-      {customRecipes.map((result, i) => (
+      <div>
+        <h3>Recipes</h3>
+        {customRecipes.map((result, i) => (
           <FoodBlock
             key={i}
             image_src={result.image}
@@ -62,6 +63,12 @@ const Profile = () => {
             onClick={() => handleClick(result)}
           />
         ))}
+      </div>
+
+      <div>
+        <h3>Posts</h3>
+      </div>
+      
 
 
     </div>

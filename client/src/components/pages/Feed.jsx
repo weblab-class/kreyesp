@@ -19,7 +19,7 @@ import NavBar from "../modules/NavBar";
 import FoodPostInput from "../modules/FoodPostInput";
 import FoodPostDisplay from "../modules/FoodPostDisplay";
 
-import {useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { poster_name } from "../App";
 
@@ -28,6 +28,8 @@ const Feed = () => {
 
   const [posts, setPosts] = useState([{ description: "" }]);
   const [posterName, setPosterName] = useState("");
+  const [showPost, setShowPost] = useState(false);
+  const [postDisplayed, setPostDisplayed] = useState("");
 
   const addNewPost = (x) => {
     setPosts([x, ...posts]);
@@ -38,18 +40,35 @@ const Feed = () => {
       setPosts(food_posts.reverse());
     });
 
-    get("/api/user-name").then((user)=>{
-            setPosterName(user.name)
-        })
+    get("/api/user-name").then((user) => {
+      setPosterName(user.name);
+    });
   }, []);
 
-  return (
-    <div className="Feed-container">
-      {/* <FoodPostDisplay poster_name={posts[0].poster_name}
-          image_src={posts[0].imgurl}
-          title={posts[0].title}
-          description={posts[0].description} /> */}
 
+
+  const handleClick = (post)=>{
+    setShowPost(true)
+    setPostDisplayed(post)
+  };
+
+  const handleClose = ()=>{
+    setShowPost(false)
+  };
+
+
+  return showPost ? (
+    <div>
+      <FoodPostDisplay
+        poster_name={postDisplayed.poster_name}
+        image_src={postDisplayed.imgurl}
+        title={postDisplayed.title}
+        description={postDisplayed.description}
+        onClose = {handleClose}
+      />
+    </div>
+  ) : (
+    <div className="Feed-container">
       <PageTitle title="Feed" description="" />
 
       <div className="Feed-row">
@@ -69,6 +88,7 @@ const Feed = () => {
           image_src={post.imgurl}
           title={post.title}
           description={post.description}
+          onClick={()=>handleClick(post)}
         />
       ))}
     </div>

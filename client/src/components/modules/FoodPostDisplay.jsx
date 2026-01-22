@@ -4,7 +4,9 @@ import "./FoodPostDisplay.css";
 const FoodPostDisplay = (props) => {
   return (
     <div className="FoodPostDisplay-component" onClick={props.onClick}>
+
       <div className="FoodPostDisplay-body">
+        
         <img
           className="FoodPostDisplay-image"
           src={props.image_src}
@@ -17,6 +19,7 @@ const FoodPostDisplay = (props) => {
             <h4 className="FoodPostDisplay-description">{props.description}</h4>
           </div>
         </div>
+        <button onClick={props.onClose}>x</button>
       </div>
     </div>
   );
