@@ -191,7 +191,7 @@ const getExternalRecipes = async (food_name) => {
 
     recipes.push(recipe_info);
 
-    console.log(recipe_info);
+    // console.log(recipe_info);
     // console.log("This is meal #" + index);
     // console.log(util.inspect(meal));
   }}
@@ -207,6 +207,12 @@ const getExternalRecipes = async (food_name) => {
 router.get("/profile-recipes", (req, res) => {
   Recipe.find({ user_id: req.user._id, is_custom:true }).then((custom_recipes)=>{res.send(custom_recipes)});
 
+})
+
+router.get("/profile-posts", (req, res) => {
+  FoodPost.find({ posterid: req.user._id}).then((posts)=>{
+    // console.log(posts)
+    res.send(posts.reverse())});
 })
 
 

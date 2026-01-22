@@ -17,13 +17,17 @@ import NavBar from "../modules/NavBar";
 import {poster_name} from  "../App";
 import { post, get } from "../../utilities";
 import {useNavigate, useLocation} from "react-router-dom";
+import FoodPostDisplay from "../modules/FoodPostDisplay";
 
 
 const Profile = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
   const [customRecipes, setCustomRecipes] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [name, setName] = useState("");
+  const [showPost, setShowPost] = useState(false);
+    const [postDisplayed, setPostDisplayed] = useState("");
 
   const navigate = useNavigate();
 
@@ -33,18 +37,44 @@ const Profile = () => {
       get("/api/profile-recipes", body).then((recipes) =>
         setCustomRecipes(recipes)
       );
+
+      get("/api/profile-posts", body).then((posts) =>
+        setPosts(posts)
+      );
+
      
       get("/api/user-name").then((user)=>{
         setName(user.name)
     })
     }, []);
 
+  
+
     //move to the recipe if click on preview
   const handleClick = (recipe) => {
     navigate("/recipe", { state: { recipe: recipe } });
   };
 
-  return (
+  const handlePostClick = (post)=>{
+    setShowPost(true)
+    setPostDisplayed(post)
+  };
+
+  const handleClose = ()=>{
+    setShowPost(false)
+  };
+
+  return showPost ? (
+    <div>
+      <FoodPostDisplay
+        poster_name={postDisplayed.poster_name}
+        image_src={postDisplayed.imgurl}
+        title={postDisplayed.title}
+        description={postDisplayed.description}
+        onClose = {handleClose}
+      />
+    </div>
+  ) :(
     <div className="Profile-container">
 
       <PageTitle
@@ -67,6 +97,18 @@ const Profile = () => {
 
       <div>
         <h3>Posts</h3>
+
+        {posts.map((post, i) => (
+        <FoodBlock
+          key={i}
+          poster_name={post.poster_name}
+          image_src={post.imgurl}
+          title={post.title}
+          description={post.description}
+          onClick={()=>handlePostClick(post)
+          }
+        />
+      ))}
       </div>
       
 
