@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext } from "react";
 import { Outlet } from "react-router-dom";
 import NavBar from "./modules/NavBar";
+import "@mantine/core/styles.css";
 
 import jwt_decode from "jwt-decode";
 
@@ -11,6 +12,7 @@ import { socket } from "../client-socket";
 import { get, post } from "../utilities";
 
 import "@mantine/core/styles.css";
+import { MantineProvider } from "@mantine/core";
 
 export const UserContext = createContext(null);
 
@@ -34,7 +36,7 @@ const App = () => {
   const handleLogin = (credentialResponse) => {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken);
-    poster_name =decodedCredential.name;
+    poster_name = decodedCredential.name;
     console.log(`Logged in as ${decodedCredential.name}`);
     post("/api/login", { token: userToken }).then((user) => {
       setUserId(user._id);
@@ -55,8 +57,14 @@ const App = () => {
 
   return (
     <UserContext.Provider value={authContextValue}>
-      <NavBar userId={userId} handleLogin={handleLogin} handleLogout={handleLogout}/>
-      <Outlet />
+      <MantineProvider>
+        <NavBar
+          userId={userId}
+          handleLogin={handleLogin}
+          handleLogout={handleLogout}
+        />
+        <Outlet />
+      </MantineProvider>
     </UserContext.Provider>
   );
 };

@@ -19,11 +19,15 @@ import { post, get } from "../../utilities";
 import {useNavigate, useLocation} from "react-router-dom";
 import FoodPostDisplay from "../modules/FoodPostDisplay";
 
+import { useDisclosure } from "@mantine/hooks";
+import { Modal, Button } from "@mantine/core";
+
 
 const Profile = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
   const [customRecipes, setCustomRecipes] = useState([]);
+  const [opened, { open, close }] = useDisclosure(false);
   const [posts, setPosts] = useState([]);
   const [name, setName] = useState("");
   const [showPost, setShowPost] = useState(false);
@@ -42,13 +46,13 @@ const Profile = () => {
         setPosts(posts)
       );
 
-     
+
       get("/api/user-name").then((user)=>{
         setName(user.name)
     })
     }, []);
 
-  
+
 
     //move to the recipe if click on preview
   const handleClick = (recipe) => {
@@ -58,24 +62,34 @@ const Profile = () => {
   const handlePostClick = (post)=>{
     setShowPost(true)
     setPostDisplayed(post)
+     open();
   };
 
   const handleClose = ()=>{
     setShowPost(false)
   };
 
-  return showPost ? (
-    <div>
-      <FoodPostDisplay
-        poster_name={postDisplayed.poster_name}
-        image_src={postDisplayed.imgurl}
-        title={postDisplayed.title}
-        description={postDisplayed.description}
-        onClose = {handleClose}
-      />
-    </div>
-  ) :(
+  return (
     <div className="Profile-container">
+
+        <>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={postDisplayed.poster_name}
+        centered
+        size="xl"
+      >
+        <div>
+          <FoodPostDisplay
+            image_src={postDisplayed.imgurl}
+            title={postDisplayed.title}
+            description={postDisplayed.description}
+            onClose={close}
+          />
+        </div>
+      </Modal>
+    </>
 
       <PageTitle
         title="Profile"
@@ -110,7 +124,7 @@ const Profile = () => {
         />
       ))}
       </div>
-      
+
 
 
     </div>

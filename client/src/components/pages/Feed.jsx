@@ -23,8 +23,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { poster_name } from "../App";
 
+import { useDisclosure } from "@mantine/hooks";
+import { Modal, Button } from "@mantine/core";
+
 const Feed = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   const [posts, setPosts] = useState([{ description: "" }]);
   const [posterName, setPosterName] = useState("");
@@ -45,30 +50,38 @@ const Feed = () => {
     });
   }, []);
 
-
-
-  const handleClick = (post)=>{
-    setShowPost(true)
-    setPostDisplayed(post)
+  const handleClick = (post) => {
+    setShowPost(true);
+    setPostDisplayed(post);
+    open();
   };
 
-  const handleClose = ()=>{
-    setShowPost(false)
+  const handleClose = () => {
+    setShowPost(false);
   };
 
-
-  return showPost ? (
-    <div>
-      <FoodPostDisplay
-        poster_name={postDisplayed.poster_name}
-        image_src={postDisplayed.imgurl}
-        title={postDisplayed.title}
-        description={postDisplayed.description}
-        onClose = {handleClose}
-      />
-    </div>
-  ) : (
+  return  (
     <div className="Feed-container">
+
+        <>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={postDisplayed.poster_name}
+        centered
+        size="xl"
+      >
+        <div>
+          <FoodPostDisplay
+            image_src={postDisplayed.imgurl}
+            title={postDisplayed.title}
+            description={postDisplayed.description}
+            onClose={close}
+          />
+        </div>
+      </Modal>
+    </>
+
       <PageTitle title="Feed" description="" />
 
       <div className="Feed-row">
@@ -88,7 +101,7 @@ const Feed = () => {
           image_src={post.imgurl}
           title={post.title}
           description={post.description}
-          onClick={()=>handleClick(post)}
+          onClick={() => handleClick(post)}
         />
       ))}
     </div>
