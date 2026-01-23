@@ -205,12 +205,12 @@ const getExternalRecipes = async (food_name) => {
 
 //profile-recipes request
 router.get("/profile-recipes", (req, res) => {
-  Recipe.find({ user_id: req.user._id, is_custom:true }).then((custom_recipes)=>{res.send(custom_recipes)});
+  Recipe.find({ user_id: req.query.req_user, is_custom:true }).then((custom_recipes)=>{res.send(custom_recipes)});
 
 })
 
 router.get("/profile-posts", (req, res) => {
-  FoodPost.find({ posterid: req.user._id}).then((posts)=>{
+  FoodPost.find({ posterid: req.query.req_user}).then((posts)=>{
     // console.log(posts)
     res.send(posts.reverse())});
 })

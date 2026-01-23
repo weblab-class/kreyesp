@@ -16,7 +16,7 @@ import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
 import {poster_name} from  "../App";
 import { post, get } from "../../utilities";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, useParams} from "react-router-dom";
 import FoodPostDisplay from "../modules/FoodPostDisplay";
 
 import { useDisclosure } from "@mantine/hooks";
@@ -24,7 +24,9 @@ import { Modal, Button } from "@mantine/core";
 
 
 const Profile = () => {
-  const { userId, handleLogin, handleLogout } = useContext(UserContext);
+  const { logged_in_user, handleLogin, handleLogout } = useContext(UserContext);
+
+  const {userId} = useParams();
 
   const [customRecipes, setCustomRecipes] = useState([]);
   const [opened, { open, close }] = useDisclosure(false);
@@ -37,7 +39,9 @@ const Profile = () => {
 
   //get all custom recipes to appear
     useEffect(() => {
-      const body = {};
+      const body = {
+        req_user:userId
+      };
       get("/api/profile-recipes", body).then((recipes) =>
         setCustomRecipes(recipes)
       );
@@ -69,9 +73,15 @@ const Profile = () => {
     setShowPost(false)
   };
 
+  console.log()
+
+  const goToProfile = () => {
+    navigate(`/profile/${postDisplayed.posterid}`);
+  };
+
   return (
     <div className="Profile-container">
-
+    {/* Makes the foodpost load conditionally */}
         <>
       <Modal
         opened={opened}
@@ -83,7 +93,7 @@ const Profile = () => {
         <div>
           <FoodPostDisplay
             image_src={postDisplayed.imgurl}
-            title={postDisplayed.title}
+            title={<div onClick={goToProfile}>{postDisplayed.poster_name}</div>}
             description={postDisplayed.description}
             onClose={close}
           />
@@ -96,7 +106,7 @@ const Profile = () => {
         description=""
       />
 
-      <h2>{name}</h2>
+      <h2>{(posts.length>0)?posts[0].poster_name : name}</h2>
       <div>
         <h3>Recipes</h3>
         {customRecipes.map((result, i) => (

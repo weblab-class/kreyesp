@@ -22,7 +22,7 @@ const NavBar = (props) => {
           Home
         </Link>
         {props.userId && (
-          <Link to="profile" className="NavBar-link">
+          <Link to={`/profile/${userId}`} className="NavBar-link">
             Profile
           </Link>
         )}

@@ -36,6 +36,8 @@ const Feed = () => {
   const [showPost, setShowPost] = useState(false);
   const [postDisplayed, setPostDisplayed] = useState("");
 
+  const navigate = useNavigate();
+
   const addNewPost = (x) => {
     setPosts([x, ...posts]);
   };
@@ -60,27 +62,31 @@ const Feed = () => {
     setShowPost(false);
   };
 
-  return  (
-    <div className="Feed-container">
+  const goToProfile = () => {
+    navigate(`/profile/${postDisplayed.posterid}`);
+  };
 
-        <>
-      <Modal
-        opened={opened}
-        onClose={close}
-        title={postDisplayed.poster_name}
-        centered
-        size="xl"
-      >
-        <div>
-          <FoodPostDisplay
-            image_src={postDisplayed.imgurl}
-            title={postDisplayed.title}
-            description={postDisplayed.description}
-            onClose={close}
-          />
-        </div>
-      </Modal>
-    </>
+  return (
+    <div className="Feed-container">
+      {/* Makes the foodpost load conditionally */}
+      <>
+        <Modal
+          opened={opened}
+          onClose={close}
+          title={<div onClick={goToProfile}>{postDisplayed.poster_name}</div>}
+          centered
+          size="xl"
+        >
+          <div>
+            <FoodPostDisplay
+              image_src={postDisplayed.imgurl}
+              title={postDisplayed.title}
+              description={postDisplayed.description}
+              onClose={close}
+            />
+          </div>
+        </Modal>
+      </>
 
       <PageTitle title="Feed" description="" />
 
