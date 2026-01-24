@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -26,11 +26,36 @@ const Recipe = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
   const { state } = useLocation();
 
+  const [editing, setEditing] = useState(false)
+
+  // const [recipe, setRecipe] = useState(state?.recipe);
+
+    useEffect(()=>{
+      if(state?.results){
+        navigate(".", {replace:true, state:[]})
+      }
+    },[]);
+
   const recipe = state.recipe;
 
-  return (
+  const handleEdit = ()=>{
+    setEditing(true)
+  };
+
+  const handleCancel = ()=>{
+    setEditing(false)
+  };
+
+  return editing?(
+  <div>
+     <CustomRecipe title="Edit Your Recipe" recipe = {recipe}/>
+     <button onClick={handleCancel}>Cancel</button>
+
+  </div>)
+  :(
     <div className="Recipe-container">
       <PageTitle title={recipe.meal_name} description="" />
+      <button onClick={handleEdit}>Edit Recipe</button>
 
       <RecipeDisplay image={recipe.image} meal_name={recipe.meal_name} ingredients={recipe.ingredients} measurements={recipe.measurements} instructions = {recipe.instructions}/>
     </div>

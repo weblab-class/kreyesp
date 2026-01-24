@@ -14,6 +14,12 @@ const GOOGLE_CLIENT_ID =
  */
 const NavBar = (props) => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
+
+  const goToProfile = () => {
+    navigate(`/profile/${userId}`);
+  };
+
+
   return (
     <nav className="NavBar-container">
       <div className="NavBar-title u-inlineBlock">Work In Progress Cooking</div>
@@ -22,7 +28,7 @@ const NavBar = (props) => {
           Home
         </Link>
         {props.userId && (
-          <Link to={`/profile/${userId}`} className="NavBar-link">
+          <Link to={`/profile/${userId}`} className="NavBar-link" onClick={goToProfile}>
             Profile
           </Link>
         )}

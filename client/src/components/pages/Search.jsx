@@ -18,7 +18,7 @@ import NavBar from "../modules/NavBar";
 
 const Search = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
-  
+
   const navigate = useNavigate();
   const { state } = useLocation();
   //handles case where we have results from another page, or if we don't have anything we just initialize empty array
@@ -28,7 +28,7 @@ const Search = () => {
     if(state?.results){
       navigate(".", {replace:true, state:[]})
     }
-  },[])
+  },[]);
 
 
 

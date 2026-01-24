@@ -7,13 +7,13 @@ import { UserContext } from "../App";
 const CustomRecipe = (props) => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
-  const [name, setName] = useState("");
-  const [ingredients, setIngredients] = useState([""]);
-  const [measurements, setMeasurements] = useState([""]);
-  const [instructions, setInstructions] = useState("");
-  const [image, setImage] = useState(null);
-  const [is_public, setIs_Public] = useState(false);
-  const [is_public_text, setIs_Public_Text] = useState("Private");
+  const [name, setName] = useState(props.recipe?.meal_name??"");
+  const [ingredients, setIngredients] = useState(props.recipe?.ingredients??[""]);
+  const [measurements, setMeasurements] = useState(props.recipe?.measurements??[""]);
+  const [instructions, setInstructions] = useState(props.recipe?.instructions??"");
+  const [image, setImage] = useState(props.recipe?.image??null);
+  const [is_public, setIs_Public] = useState(props.recipe?.is_public??false);
+  const [is_public_text, setIs_Public_Text] = useState(props.recipe?.is_public_text??"Private");
 
   const autoResizeBox = (event) => {
     event.target.style.height = "auto";
@@ -84,6 +84,8 @@ const CustomRecipe = (props) => {
       reader.readAsDataURL(file);
     });
 
+    
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (userId) {
@@ -133,7 +135,7 @@ const CustomRecipe = (props) => {
 
   return (
     <div className="CustomRecipe-component">
-      <h1 className="CustomRecipe-title">Save Your Own:</h1>
+      <h1 className="CustomRecipe-title">{props.title}</h1>
 
       <div className="CustomRecipe-checkbox-row">
 
@@ -181,6 +183,7 @@ const CustomRecipe = (props) => {
         {/* Creates dynamic ingredients lists */}
         {ingredients.map((ingredient, i) => (
           <div key={i} className="CustomRecipe-ingredient-measurement-row">
+            {console.log(ingredient, i)}
             <textarea
               className="CustomRecipe-ingredients"
               value={ingredient}

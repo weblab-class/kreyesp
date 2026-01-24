@@ -72,7 +72,7 @@ const Skeleton = () => {
 
         {/* Custom Recipe Component */}
         <div className="CustomRecipeRow">
-          <CustomRecipe />
+          <CustomRecipe title="Save Your Own!" recipe={null}/>
           <img
             className="CustomRecipeBanner"
             src={custom_recipe_banner}

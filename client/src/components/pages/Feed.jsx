@@ -73,7 +73,7 @@ const Feed = () => {
         <Modal
           opened={opened}
           onClose={close}
-          title={<div onClick={goToProfile}>{postDisplayed.poster_name}</div>}
+          title={<div className={"Feed-FoodPostDisply-Name"} onClick={goToProfile} >{postDisplayed.poster_name}</div>}
           centered
           size="xl"
         >

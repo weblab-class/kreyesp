@@ -107,6 +107,7 @@ const Profile = () => {
       />
 
       <h2>{(posts.length>0)?posts[0].poster_name : name}</h2>
+      
       <div>
         <h3>Recipes</h3>
         {customRecipes.map((result, i) => (
