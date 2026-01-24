@@ -7,13 +7,21 @@ import { UserContext } from "../App";
 const CustomRecipe = (props) => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
-  const [name, setName] = useState(props.recipe?.meal_name??"");
-  const [ingredients, setIngredients] = useState(props.recipe?.ingredients??[""]);
-  const [measurements, setMeasurements] = useState(props.recipe?.measurements??[""]);
-  const [instructions, setInstructions] = useState(props.recipe?.instructions??"");
-  const [image, setImage] = useState(props.recipe?.image??null);
-  const [is_public, setIs_Public] = useState(props.recipe?.is_public??false);
-  const [is_public_text, setIs_Public_Text] = useState(props.recipe?.is_public_text??"Private");
+  const [name, setName] = useState(props.recipe?.meal_name ?? "");
+  const [ingredients, setIngredients] = useState(
+    props.recipe?.ingredients ?? [""],
+  );
+  const [measurements, setMeasurements] = useState(
+    props.recipe?.measurements ?? [""],
+  );
+  const [instructions, setInstructions] = useState(
+    props.recipe?.instructions ?? "",
+  );
+  const [image, setImage] = useState(props.recipe?.image ?? null);
+  const [imageFile, setImageFile] = useState(null);
+
+  const [is_public, setIs_Public] = useState(props.recipe?.is_public ?? false);
+  const is_public_text = is_public? "Public":"Private";
 
   const autoResizeBox = (event) => {
     event.target.style.height = "auto";
@@ -22,7 +30,7 @@ const CustomRecipe = (props) => {
 
   const changeImage = (event) => {
     const file = event.target.files[0] ?? null;
-    setImage(file);
+    setImageFile(file);
   };
 
   const changeName = (event) => {
@@ -66,14 +74,9 @@ const CustomRecipe = (props) => {
 
   const handleCheck = () => {
     setIs_Public(!is_public);
-    if (is_public_text === "Public") {
-      setIs_Public_Text("Private");
-    } else {
-      setIs_Public_Text("Public");
-    }
+    
   };
-  console.log(is_public)
-
+  console.log(is_public);
 
   //encode file data at dataUri string
   const fileToDataUri = (file) =>
@@ -84,53 +87,126 @@ const CustomRecipe = (props) => {
       reader.readAsDataURL(file);
     });
 
-    
-
   const handleSubmit = (event) => {
     event.preventDefault();
+
     if (userId) {
-      // do a post to cloudinary
-      let imgurl = "";
+        if (!props.is_editing) {
+        // do a post to cloudinary
+        let imgurl = "";
 
-      if (image && name) {
-        fileToDataUri(image)
-          .then((dataUri) => {
-            //do post to cloudinary
-            return post("/api/custom-recipe-image", { dataUri });
-          })
-          .then((res) => {
-            //do post to mongodb
-            const body = {
-              is_public:is_public,
-              meal_name: name,
-              instructions: instructions,
-              image: res.imgurl,
-              ingredients: ingredients,
-              measurements: measurements,
-            };
-            post("/api/mongo-recipe", body).then();
-            setIngredients([""]);
-            setMeasurements([""]);
-            setName("");
-            setInstructions("");
-            setImage(null);
+        if (imageFile && name) {
+          fileToDataUri(imageFile)
+            .then((dataUri) => {
+              //do post to cloudinary
+              return post("/api/custom-recipe-image", { dataUri });
+            })
+            .then((res) => {
+              //do post to mongodb
+              const body = {
+                is_public: is_public,
+                meal_name: name,
+                instructions: instructions,
+                image: res.imgurl,
+                ingredients: ingredients,
+                measurements: measurements,
+              };
+              post("/api/mongo-recipe", body).then();
+              setIngredients([""]);
+              setMeasurements([""]);
+              setName("");
+              setInstructions("");
+              setImage(null);
 
-            //reset the image upload area after post upload
-            const fileInput = document.getElementById("imageUpload");
-            if (fileInput) fileInput.value = "";
-          });
+              //reset the image upload area after post upload
+              const fileInput = document.getElementById("imageUpload");
+              if (fileInput) fileInput.value = "";
+            });
+        }}
+        else if(props.is_editing){
+          // do a post to cloudinary
+        let imgurl = "";
+
+        if (imageFile && name) {
+          fileToDataUri(imageFile)
+            .then((dataUri) => {
+              //do post to cloudinary
+              return post("/api/custom-recipe-image", { dataUri });
+            })
+            .then((res) => {
+              //do post to mongodb
+              const change = {id: props.recipe?._id,
+                body:{
+                is_public: is_public,
+                meal_name: name,
+                instructions: instructions,
+                image: res.imgurl,
+                ingredients: ingredients,
+                measurements: measurements,
+                }
+              };
+              post("/api/edit-recipe", change).then((updated_recipe)=>{props.set_is_editing(false)
+                props.set_recipe(updated_recipe)
+              });
+              setIngredients([""]);
+              setMeasurements([""]);
+              setName("");
+              setInstructions("");
+              setImage(null);
+
+
+              //reset the image upload area after post upload
+              const fileInput = document.getElementById("imageUpload");
+              if (fileInput) fileInput.value = "";
+            });
+        }
+        //no image uploaded, so just use the old one
+        //require name of food to post
+        else if(!imageFile && name){
+          //do post to mongodb
+              const change = {id: props.recipe?._id,
+                body:{
+                is_public: is_public,
+                meal_name: name,
+                instructions: instructions,
+                image: image,
+                ingredients: ingredients,
+                measurements: measurements,
+              }
+              };
+              post("/api/edit-recipe", change).then((updated_recipe)=>{props.set_is_editing(false)
+                props.set_recipe(updated_recipe)
+              });
+              setIngredients([""]);
+              setMeasurements([""]);
+              setName("");
+              setInstructions("");
+              setImage(null);
+              
+        }
+
+        }
+
+
+      } 
+      
+      
+      
+      
+      else {
+        if (!userId) {
+          alert("Please log in to save a recipe.");
+        }
+        if (!imageFile) {
+          alert("Please upload an image");
+        }
+        if (!name) {
+          alert("Please upload a name");
+        }
       }
-    } else {
-      if (!userId) {
-        alert("Please log in to save a recipe.");
-      }
-      if (!image) {
-        alert("Please upload an image");
-      }
-      if (!name) {
-        alert("Please upload a name");
-      }
-    }
+
+
+      
   };
 
   return (
@@ -138,13 +214,12 @@ const CustomRecipe = (props) => {
       <h1 className="CustomRecipe-title">{props.title}</h1>
 
       <div className="CustomRecipe-checkbox-row">
-
         <input
           type="checkbox"
           checked={is_public}
           onChange={handleCheck}
         ></input>
-         <label>{is_public_text}</label>
+        <label>{is_public_text}</label>
       </div>
 
       <label htmlFor="imageUpload">Choose an image to upload:</label>

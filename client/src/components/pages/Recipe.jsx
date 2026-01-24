@@ -17,6 +17,10 @@ import CustomRecipe from "../modules/CustomRecipe";
 import NavBar from "../modules/NavBar";
 import RecipeDisplay from "../modules/RecipeDisplay";
 
+import { useParams } from "react-router-dom";
+import { post, get } from "../../utilities";
+
+
 const Recipe = () => {
   // meal_name: String,
   // instructions: String,
@@ -24,19 +28,18 @@ const Recipe = () => {
   // ingredients: Array,
   // measurements: Array
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
-  const { state } = useLocation();
+  const { recipeId } = useParams();
 
   const [editing, setEditing] = useState(false)
+  
 
-  // const [recipe, setRecipe] = useState(state?.recipe);
+  const [recipe, setRecipe] = useState(null);
 
     useEffect(()=>{
-      if(state?.results){
-        navigate(".", {replace:true, state:[]})
-      }
+      get("/api/recipe-from-id", { id: recipeId }).then((rec) => setRecipe(rec));
     },[]);
 
-  const recipe = state.recipe;
+  // const recipe = state.recipe;
 
   const handleEdit = ()=>{
     setEditing(true)
@@ -46,20 +49,23 @@ const Recipe = () => {
     setEditing(false)
   };
 
-  return editing?(
+  return (!recipe)?
+  (<div>Loading Recipe</div>):
+  (editing?(
   <div>
-     <CustomRecipe title="Edit Your Recipe" recipe = {recipe}/>
+     <CustomRecipe title="Edit Your Recipe" recipe = {recipe} is_editing={editing} set_is_editing={setEditing} set_recipe={setRecipe}/>
      <button onClick={handleCancel}>Cancel</button>
 
   </div>)
   :(
     <div className="Recipe-container">
       <PageTitle title={recipe.meal_name} description="" />
-      <button onClick={handleEdit}>Edit Recipe</button>
+      {recipe?.is_custom && recipe.user_id === userId && <button onClick={handleEdit}>Edit Recipe</button>}
 
       <RecipeDisplay image={recipe.image} meal_name={recipe.meal_name} ingredients={recipe.ingredients} measurements={recipe.measurements} instructions = {recipe.instructions}/>
     </div>
-  );
+  )
+);
 };
 
 export default Recipe;

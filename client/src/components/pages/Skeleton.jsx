@@ -31,7 +31,7 @@ const Skeleton = () => {
 
   //move to the recipe if click on preview
   const handleClick = (recipe) => {
-    navigate("/recipe", { state: { recipe: recipe } });
+    navigate(`/recipe/${recipe._id}`, { state: { recipe: recipe } });
   };
 
   //render 3 random recommendations

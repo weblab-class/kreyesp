@@ -56,7 +56,7 @@ router.post("/initsocket", (req, res) => {
   if (req.user)
     socketManager.addUser(
       req.user,
-      socketManager.getSocketFromSocketID(req.body.socketid)
+      socketManager.getSocketFromSocketID(req.body.socketid),
     );
   res.send({});
 });
@@ -89,17 +89,17 @@ router.get("/food-post", (req, res) => {
     });
 });
 
-
-
 //Recipe MongoDB requests
 router.get("/mongo-recipe", (req, res) => {
-  let query = { meal_name: { $regex: req.query.food_name, $options: "i" } }
+  let query = { meal_name: { $regex: req.query.food_name, $options: "i" } };
 
-  if(req.user){
-    query['$or'] = [{is_public:true}, {$and:[{is_public:false }, {user_id:req.user._id}]}];
-  }
-  else{
-    query['$or'] = [{is_public:true}];
+  if (req.user) {
+    query["$or"] = [
+      { is_public: true },
+      { $and: [{ is_public: false }, { user_id: req.user._id }] },
+    ];
+  } else {
+    query["$or"] = [{ is_public: true }];
   }
 
   //$options: "i" does case insensitive
@@ -131,7 +131,7 @@ router.get("/mongo-recipe", (req, res) => {
 
 const storeRecipe = (recipe) => {
   const newRecipe = new Recipe({
-    is_public:true,
+    is_public: true,
     is_custom: false,
     user_id: null,
     meal_name: recipe.meal_name,
@@ -145,7 +145,7 @@ const storeRecipe = (recipe) => {
 
 router.post("/mongo-recipe", (req, res) => {
   const newRecipe = new Recipe({
-    is_public:req.body.is_public,
+    is_public: req.body.is_public,
     is_custom: true,
     user_id: req.user._id,
     meal_name: req.body.meal_name,
@@ -158,6 +158,20 @@ router.post("/mongo-recipe", (req, res) => {
   newRecipe.save().then((recipe) => res.send(recipe));
 });
 
+router.post("/edit-recipe", (req, res) => {
+  if (!req.user) return res.status(401).send({ error: "Not logged in" });
+
+  const {id, body} =  req.body;
+  Recipe.findOneAndUpdate({ _id: id, user_id: req.user._id, is_custom: true }, {$set:body}, { new: true } ).then((result)=>res.send(result));
+});
+
+
+router.get("/recipe-from-id", (req, res) =>{
+  Recipe.findById({_id:req.query.id}).then((recipe)=>{
+    res.send(recipe);
+  })
+})
+
 //Recipe api requests (currently MealDB)
 const recipe_website = "https://www.themealdb.com/api/json/v1/1/search.php";
 
@@ -167,55 +181,56 @@ const getExternalRecipes = async (food_name) => {
   const meal_response = response.data.meals;
   let recipes = [];
 
-  if(meal_response){for (const [index, meal] of meal_response.entries()) {
-    const ingredients = [];
-    const measurements = [];
+  if (meal_response) {
+    for (const [index, meal] of meal_response.entries()) {
+      const ingredients = [];
+      const measurements = [];
 
-    for (let i = 1; i < 21; i++) {
-      const ingredient = meal[`strIngredient${i}`];
-      const measurement = meal[`strMeasure${i}`];
+      for (let i = 1; i < 21; i++) {
+        const ingredient = meal[`strIngredient${i}`];
+        const measurement = meal[`strMeasure${i}`];
 
-      if (ingredient !== "" && measurement !== "") {
-        ingredients.push(ingredient);
-        measurements.push(measurement);
+        if (ingredient !== "" && measurement !== "") {
+          ingredients.push(ingredient);
+          measurements.push(measurement);
+        }
       }
+
+      const recipe_info = {
+        meal_name: meal["strMeal"],
+        instructions: meal["strInstructions"],
+        image: meal["strMealThumb"],
+        ingredients: ingredients,
+        measurements: measurements,
+      };
+
+      recipes.push(recipe_info);
+
+      // console.log(recipe_info);
+      // console.log("This is meal #" + index);
+      // console.log(util.inspect(meal));
     }
-
-    const recipe_info = {
-      meal_name: meal["strMeal"],
-      instructions: meal["strInstructions"],
-      image: meal["strMealThumb"],
-      ingredients: ingredients,
-      measurements: measurements,
-    };
-
-    recipes.push(recipe_info);
-
-    // console.log(recipe_info);
-    // console.log("This is meal #" + index);
-    // console.log(util.inspect(meal));
-  }}
-
-
+  }
 
   // console.log(util.inspect(response.data.meals));
   return recipes;
 };
 
-
 //profile-recipes request
 router.get("/profile-recipes", (req, res) => {
-  Recipe.find({ user_id: req.query.req_user, is_custom:true }).then((custom_recipes)=>{res.send(custom_recipes)});
-
-})
+  Recipe.find({ user_id: req.query.req_user, is_custom: true }).then(
+    (custom_recipes) => {
+      res.send(custom_recipes);
+    },
+  );
+});
 
 router.get("/profile-posts", (req, res) => {
-  FoodPost.find({ posterid: req.query.req_user}).then((posts)=>{
+  FoodPost.find({ posterid: req.query.req_user }).then((posts) => {
     // console.log(posts)
-    res.send(posts.reverse())});
-})
-
-
+    res.send(posts.reverse());
+  });
+});
 
 // router.get("/recipe", async (req, res) => {
 //   const food_name = req.query.food_name;
@@ -258,36 +273,31 @@ router.get("/profile-posts", (req, res) => {
 //   res.send(recipes);
 // });
 
-
-
-
 //random recipes for homepage
 router.get("/random-recipes", (req, res) => {
   //get 3 random samples
-  Recipe.aggregate([{$match : {
-         is_public:true
-      }}, {$sample:{size:3}}]).then((random_samples)=>{res.send(random_samples)});
-
-})
-
-
+  Recipe.aggregate([
+    {
+      $match: {
+        is_public: true,
+      },
+    },
+    { $sample: { size: 3 } },
+  ]).then((random_samples) => {
+    res.send(random_samples);
+  });
+});
 
 //get username
-router.get("/user-name", (req, res)=>{
-  if (!req.user._id){
-    res.send({name:""})
-  }else{
-
-    User.findById(req.user._id).then((user)=>{
-      res.send({name:user.name})
-    })
+router.get("/user-name", (req, res) => {
+  if (!req.user._id) {
+    res.send({ name: "" });
+  } else {
+    User.findById(req.user._id).then((user) => {
+      res.send({ name: user.name });
+    });
   }
-  ;
-})
-
-
-
-
+});
 
 //api's to cloudinary
 //food-posts image upload

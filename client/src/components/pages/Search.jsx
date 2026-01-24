@@ -39,7 +39,7 @@ const Search = () => {
   console.log(results)
 
   const handleClick = (recipe) =>{
-    navigate("/recipe", {state:{recipe:recipe}});
+    navigate(`/recipe/${recipe._id}`, {state:{recipe:recipe}});
   }
 
   return (
