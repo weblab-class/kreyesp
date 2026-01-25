@@ -113,13 +113,17 @@ router.get("/mongo-recipe", (req, res) => {
       } else {
         //check external api
 
-        getExternalRecipes(req.query.food_name).then((external_recipes) => {
+        getExternalRecipes(req.query.food_name).then(async (external_recipes) => {
           if (external_recipes.length !== 0) {
+            //want to keep track of the recipes with mongodb assign ids
+            let recipes_with_ids = [];
             //send recipes to mongodb
             for (const [index, external_recipe] of external_recipes.entries()) {
-              storeRecipe(external_recipe);
+              //make sure to wait for mongodb to return the recipe
+              const recipe_with_id = await storeRecipe(external_recipe); 
+              recipes_with_ids.push(recipe_with_id);
             }
-            res.send(external_recipes);
+            res.send(recipes_with_ids);
           } else {
             //if no external recipes, send out an empty array
             res.send([]);
@@ -140,7 +144,7 @@ const storeRecipe = (recipe) => {
     ingredients: recipe.ingredients,
     measurements: recipe.measurements,
   });
-  newRecipe.save();
+   return newRecipe.save();
 };
 
 router.post("/mongo-recipe", (req, res) => {
