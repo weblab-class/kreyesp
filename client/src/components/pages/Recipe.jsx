@@ -60,7 +60,7 @@ const Recipe = () => {
   :(
     <div className="Recipe-container">
       <PageTitle title={recipe.meal_name} description="" />
-      {recipe?.is_custom && recipe.user_id === userId && <button onClick={handleEdit}>Edit Recipe</button>}
+      {recipe?.is_custom && recipe.user_id === userId && <button className="Recipe-edit-button" onClick={handleEdit}>Edit Recipe</button>}
 
       <RecipeDisplay image={recipe.image} meal_name={recipe.meal_name} ingredients={recipe.ingredients} measurements={recipe.measurements} instructions = {recipe.instructions}/>
     </div>
