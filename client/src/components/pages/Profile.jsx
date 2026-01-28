@@ -106,10 +106,10 @@ const Profile = () => {
         description=""
       />
 
-      <h2>{(posts.length>0)?posts[0].poster_name : name}</h2>
-      
+      <h2 className="Profile-label">{(posts.length>0)?posts[0].poster_name : name}</h2>
+
       <div>
-        <h3>Recipes</h3>
+        <h2 className="Profile-label">Recipes</h2>
         {customRecipes.map((result, i) => (
           <FoodBlock
             key={i}
@@ -121,7 +121,7 @@ const Profile = () => {
       </div>
 
       <div>
-        <h3>Posts</h3>
+        <h2 className="Profile-label">Posts</h2>
 
         {posts.map((post, i) => (
         <FoodBlock

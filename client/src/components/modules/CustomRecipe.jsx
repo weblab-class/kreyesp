@@ -4,24 +4,27 @@ import { post, get } from "../../utilities";
 import TextBox from "./TextBox";
 import { UserContext } from "../App";
 
+import { useDisclosure } from "@mantine/hooks";
+import { Modal, Button, SimpleGrid, FileButton } from "@mantine/core";
+
 const CustomRecipe = (props) => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
 
   const [name, setName] = useState(props.recipe?.meal_name ?? "");
   const [ingredients, setIngredients] = useState(
-    props.recipe?.ingredients ?? [""],
+    props.recipe?.ingredients ?? [""]
   );
   const [measurements, setMeasurements] = useState(
-    props.recipe?.measurements ?? [""],
+    props.recipe?.measurements ?? [""]
   );
   const [instructions, setInstructions] = useState(
-    props.recipe?.instructions ?? "",
+    props.recipe?.instructions ?? ""
   );
   const [image, setImage] = useState(props.recipe?.image ?? null);
   const [imageFile, setImageFile] = useState(null);
 
   const [is_public, setIs_Public] = useState(props.recipe?.is_public ?? false);
-  const is_public_text = is_public? "Public":"Private";
+  const is_public_text = is_public ? "Public" : "Private";
 
   const autoResizeBox = (event) => {
     event.target.style.height = "auto";
@@ -74,7 +77,6 @@ const CustomRecipe = (props) => {
 
   const handleCheck = () => {
     setIs_Public(!is_public);
-    
   };
   console.log(is_public);
 
@@ -91,7 +93,7 @@ const CustomRecipe = (props) => {
     event.preventDefault();
 
     if (userId) {
-        if (!props.is_editing) {
+      if (!props.is_editing) {
         // do a post to cloudinary
         let imgurl = "";
 
@@ -122,9 +124,19 @@ const CustomRecipe = (props) => {
               const fileInput = document.getElementById("imageUpload");
               if (fileInput) fileInput.value = "";
             });
-        }}
-        else if(props.is_editing){
-          // do a post to cloudinary
+        }  else {
+      if (!userId) {
+        alert("Please log in to save a recipe.");
+      }
+      if (!imageFile) {
+        alert("Please upload an image");
+      }
+      if (!name) {
+        alert("Please upload a name");
+      }
+    }
+      } else if (props.is_editing) {
+        // do a post to cloudinary
         let imgurl = "";
 
         if (imageFile && name) {
@@ -135,25 +147,26 @@ const CustomRecipe = (props) => {
             })
             .then((res) => {
               //do post to mongodb
-              const change = {id: props.recipe?._id,
-                body:{
-                is_public: is_public,
-                meal_name: name,
-                instructions: instructions,
-                image: res.imgurl,
-                ingredients: ingredients,
-                measurements: measurements,
-                }
+              const change = {
+                id: props.recipe?._id,
+                body: {
+                  is_public: is_public,
+                  meal_name: name,
+                  instructions: instructions,
+                  image: res.imgurl,
+                  ingredients: ingredients,
+                  measurements: measurements,
+                },
               };
-              post("/api/edit-recipe", change).then((updated_recipe)=>{props.set_is_editing(false)
-                props.set_recipe(updated_recipe)
+              post("/api/edit-recipe", change).then((updated_recipe) => {
+                props.set_is_editing(false);
+                props.set_recipe(updated_recipe);
               });
               setIngredients([""]);
               setMeasurements([""]);
               setName("");
               setInstructions("");
               setImage(null);
-
 
               //reset the image upload area after post upload
               const fileInput = document.getElementById("imageUpload");
@@ -162,75 +175,59 @@ const CustomRecipe = (props) => {
         }
         //no image uploaded, so just use the old one
         //require name of food to post
-        else if(!imageFile && name){
+        else if (!imageFile && name) {
           //do post to mongodb
-              const change = {id: props.recipe?._id,
-                body:{
-                is_public: is_public,
-                meal_name: name,
-                instructions: instructions,
-                image: image,
-                ingredients: ingredients,
-                measurements: measurements,
-              }
-              };
-              post("/api/edit-recipe", change).then((updated_recipe)=>{props.set_is_editing(false)
-                props.set_recipe(updated_recipe)
-              });
-              setIngredients([""]);
-              setMeasurements([""]);
-              setName("");
-              setInstructions("");
-              setImage(null);
-              
-        }
-
-        }
-
-
-      } 
-      
-      
-      
-      
-      else {
-        if (!userId) {
-          alert("Please log in to save a recipe.");
-        }
-        if (!imageFile) {
-          alert("Please upload an image");
-        }
-        if (!name) {
-          alert("Please upload a name");
+          const change = {
+            id: props.recipe?._id,
+            body: {
+              is_public: is_public,
+              meal_name: name,
+              instructions: instructions,
+              image: image,
+              ingredients: ingredients,
+              measurements: measurements,
+            },
+          };
+          post("/api/edit-recipe", change).then((updated_recipe) => {
+            props.set_is_editing(false);
+            props.set_recipe(updated_recipe);
+          });
+          setIngredients([""]);
+          setMeasurements([""]);
+          setName("");
+          setInstructions("");
+          setImage(null);
         }
       }
-
-
-      
+    } else {
+      if (!userId) {
+        alert("Please log in to save a recipe.");
+      }
+      if (!imageFile) {
+        alert("Please upload an image");
+      }
+      if (!name) {
+        alert("Please upload a name");
+      }
+    }
   };
 
   return (
     <div className="CustomRecipe-component">
       <h1 className="CustomRecipe-title">{props.title}</h1>
 
-      <div className="CustomRecipe-checkbox-row">
-        <input
-          type="checkbox"
-          checked={is_public}
-          onChange={handleCheck}
-        ></input>
-        <label>{is_public_text}</label>
-      </div>
+
 
       <label htmlFor="imageUpload">Choose an image to upload:</label>
       {/* Image upload button */}
       <form
-        className="CustomRecipe-image-upload"
+        className="CustomRecipe-image-upload "
         action="/upload"
         method="post"
         encType="multipart/form-data"
       >
         <input
+
           type="file"
           id="imageUpload"
           name="image"
@@ -249,38 +246,56 @@ const CustomRecipe = (props) => {
       />
 
       <div className="CustomRecipe-ingredients-component">
-        <label className="CustomRecipe-label-ingredients">
-          Ingredients and Measurment
-        </label>
-        <button className="CustomRecipe-add-ingredient" onClick={handleAdd}>
-          +
-        </button>
         {/* Creates dynamic ingredients lists */}
         {ingredients.map((ingredient, i) => (
           <div key={i} className="CustomRecipe-ingredient-measurement-row">
             {console.log(ingredient, i)}
-            <textarea
-              className="CustomRecipe-ingredients"
-              value={ingredient}
-              onChange={(event) => changeIngredients(i, event)}
-              rows={props.rows ?? 1}
-              cols={props.cols}
-            />
-            <textarea
-              className="CustomRecipe-measurements"
-              value={measurements[i]}
-              onChange={(event) => changeMeasurements(i, event)}
-              rows={props.rows ?? 1}
-              cols={props.cols}
-            />
-            <button
-              className="CustomRecipe-remove-ingredient"
-              onClick={() => handleRemove(i)}
-            >
-              -
-            </button>
+            <div className="CustomRecipe-text-ing">
+              {" "}
+              {i === 0 && (
+                <label className="CustomRecipe-label-ingredients">
+                  Ingredients
+                </label>
+              )}
+              <textarea
+                className="CustomRecipe-ingredients"
+                value={ingredient}
+                onChange={(event) => changeIngredients(i, event)}
+                rows={props.rows ?? 1}
+                cols={props.cols}
+              />
+            </div>
+
+            <div className="CustomRecipe-text-mea">
+              {i === 0 && (
+                <label className="CustomRecipe-label-measurements">
+                  Measurements
+                </label>
+              )}
+              <textarea
+                className="CustomRecipe-measurements"
+                value={measurements[i]}
+                onChange={(event) => changeMeasurements(i, event)}
+                rows={props.rows ?? 1}
+                cols={props.cols}
+              />
+            </div>
+            <div className="CustomRecipe-button">
+              {i === 0 && <label className="CustomRecipe-blank"> </label>}
+              <button
+                className="CustomRecipe-remove-ingredient"
+                onClick={() => {
+                  ingredients.length > 1 ? handleRemove(i) : null;
+                }}
+              >
+                -
+              </button>
+            </div>
           </div>
         ))}
+        <button className="CustomRecipe-add-ingredient CustomRecipe-Button" onClick={handleAdd}>
+          Add New Ingredient
+        </button>
       </div>
 
       <label className="CustomRecipe-label-instructions">Instructions</label>
@@ -288,12 +303,21 @@ const CustomRecipe = (props) => {
         className="CustomRecipe-instructions"
         value={instructions}
         onChange={changeInstructions}
-        rows={props.rows ?? 1}
+        rows={props.rows}
         cols={props.cols}
       />
-      <button className="CustomRecipe-submit" onClick={handleSubmit}>
+      <div className="CustomRecipe-save-row"><button className="CustomRecipe-submit CustomRecipe-Button" onClick={handleSubmit}>
         Save
       </button>
+      <div className="CustomRecipe-checkbox-row">
+        <input
+          type="checkbox"
+          checked={is_public}
+          onChange={handleCheck}
+        ></input>
+        <label>{is_public_text}</label>
+      </div></div>
+
     </div>
   );
 };

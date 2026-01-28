@@ -1,7 +1,42 @@
-.CustomRecipe-component{
+.CustomRecipe-component {
   margin: 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: flex-start;
 }
+
+.CustomRecipe-ingredient-measurement-row {
+  display: flex;
+  align-items: bottom;
+  vertical-align: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.CustomRecipe-instructions {
+  width: 100%;
+  height: 20%;
+}
+
+.CustomRecipe-text-ing {
+  display: flex;
+  flex-direction: column;
+}
+
+.CustomRecipe-text-mea {
+  display: flex;
+  flex-direction: column;
+}
+
+.CustomRecipe-button {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.CustomRecipe-save-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+

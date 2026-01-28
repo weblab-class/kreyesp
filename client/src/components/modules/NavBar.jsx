@@ -19,7 +19,6 @@ const NavBar = (props) => {
     navigate(`/profile/${userId}`);
   };
 
-
   return (
     <nav className="NavBar-container">
       <div className="NavBar-title u-inlineBlock">Work In Progress Cooking</div>
@@ -28,7 +27,11 @@ const NavBar = (props) => {
           Home
         </Link>
         {props.userId && (
-          <Link to={`/profile/${userId}`} className="NavBar-link" onClick={goToProfile}>
+          <Link
+            to={`/profile/${userId}`}
+            className="NavBar-link"
+            onClick={goToProfile}
+          >
             Profile
           </Link>
         )}
@@ -38,8 +41,7 @@ const NavBar = (props) => {
         <Link to="/feed" className="NavBar-link">
           Feed
         </Link>
-
-
+        <div className="NavBar-log-button">
           {userId ? (
             <button
               onClick={() => {
@@ -51,11 +53,12 @@ const NavBar = (props) => {
             </button>
           ) : (
             <GoogleLogin
+              className="NavBar-link"
               onSuccess={handleLogin}
               onError={(err) => console.log(err)}
             />
           )}
-
+        </div>
       </div>
     </nav>
   );

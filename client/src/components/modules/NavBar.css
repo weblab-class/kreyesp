@@ -1,4 +1,6 @@
 .NavBar-container {
+  display: flex;
+  flex-direction: row;
   padding: var(--s) var(--m);
   background-color: var(--primary);
 }
@@ -14,6 +16,7 @@
 }
 
 .NavBar-linkContainer {
+  align-items: center;
   margin-left: var(--l);
 }
 
@@ -34,4 +37,11 @@
 
 .NavBar-link + .NavBar-link {
   margin-left: var(--m);
+}
+
+.NavBar-log-button {
+  margin-left: 1050px;
+  display: flex;
+  flex-direction: row-reverse;
+  float: right;
 }

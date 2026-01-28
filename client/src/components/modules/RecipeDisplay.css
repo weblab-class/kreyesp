@@ -1,3 +1,28 @@
 .RecipeDisplay-instructions {
-  white-space: pre-line; 
+  white-space: pre-line;
+  font-family: "Sniglet";
+  margin: 30px;
+  border: 12px solid var(--primary);
+  border-color: var(--primary);
+
+  padding: 12px;
+}
+
+.RecipeDisplay-image {
+  size: auto;
+  height: auto;
+  display: block;
+}
+
+.RecipeDisplay-top-screen {
+  display: flex;
+  vertical-align: top;
+  align-items: center;
+  justify-content: center;
+}
+
+.RecipeDisplay-ingredients {
+  font-family: "Sniglet";
+  align-items: column;
+  margin: 20px;
 }

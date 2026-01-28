@@ -12,8 +12,8 @@
 }
 
 .FoodBlock-component{margin: 10px;
-    background: #e0e0e0;  
-    border: 1px solid var(--border-grey); 
+    background: var(--secondary);
+    border: 2px solid var(--primary);
     padding: 12px;
     border-radius: 8px;
     display: inline-block;

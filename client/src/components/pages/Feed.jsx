@@ -24,7 +24,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { poster_name } from "../App";
 
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button } from "@mantine/core";
+import { Modal, Button, SimpleGrid } from "@mantine/core";
 
 const Feed = () => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
@@ -73,7 +73,11 @@ const Feed = () => {
         <Modal
           opened={opened}
           onClose={close}
-          title={<div className={"Feed-FoodPostDisply-Name"} onClick={goToProfile} >{postDisplayed.poster_name}</div>}
+          title={
+            <div className={"Feed-FoodPostDisply-Name"} onClick={goToProfile}>
+              {postDisplayed.poster_name}
+            </div>
+          }
           centered
           size="xl"
         >
@@ -99,17 +103,18 @@ const Feed = () => {
           addNewPost={addNewPost}
         />
       </div>
-
-      {posts.map((post, i) => (
-        <FoodBlock
-          key={i}
-          poster_name={post.poster_name}
-          image_src={post.imgurl}
-          title={post.title}
-          description={post.description}
-          onClick={() => handleClick(post)}
-        />
-      ))}
+      <SimpleGrid cols={5}>
+        {posts.map((post, i) => (
+          <FoodBlock
+            key={i}
+            poster_name={post.poster_name}
+            image_src={post.imgurl}
+            title={post.title}
+            //   description={post.description}
+            onClick={() => handleClick(post)}
+          />
+        ))}
+      </SimpleGrid>
     </div>
   );
 };

@@ -45,7 +45,7 @@
   flex-shrink: 0;
 }
 
-.FoodPostDisplay-info{
+.FoodPostDisplay-title{
   display: flex;
   flex-direction: column;
   justify-content: center;
